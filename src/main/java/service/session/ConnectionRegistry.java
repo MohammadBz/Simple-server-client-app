@@ -1,6 +1,6 @@
-package application.session;
+package service.session;
 
-import application.core.ClientHandler;
+import service.core.ClientHandler;
 import lombok.extern.slf4j.Slf4j;
 import protocol.response.ResponseMessages;
 

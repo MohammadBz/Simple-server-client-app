@@ -1,4 +1,4 @@
-package application.client;
+package service.client;
 
 import app.client.event.ClientEventHandler;
 import protocol.message.Message;

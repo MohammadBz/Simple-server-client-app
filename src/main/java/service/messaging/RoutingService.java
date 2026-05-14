@@ -1,11 +1,11 @@
-package application.messaging;
+package service.messaging;
 
 import exception.MessageRoutingException;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
 import domain.chat.MessageStatus;
-import application.core.ClientHandler;
-import application.session.SessionRegistry;
+import service.core.ClientHandler;
+import service.session.SessionRegistry;
 
 @Slf4j
 public class RoutingService {

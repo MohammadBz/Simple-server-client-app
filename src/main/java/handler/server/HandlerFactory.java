@@ -1,8 +1,8 @@
 package handler.server;
 
 import protocol.message.MessageType;
-import application.auth.AuthService;
-import application.core.ServerManager;
+import service.auth.AuthService;
+import service.core.ServerManager;
 
 import java.util.HashMap;
 import java.util.Map;

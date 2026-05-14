@@ -1,11 +1,11 @@
 package app.server;
 
-import application.core.Server;
+import service.core.Server;
 import lombok.extern.slf4j.Slf4j;
 import presentation.admin.AdminConsole;
 import presentation.admin.AdminController;
-import application.admin.AdminService;
-import application.core.ServerManager;
+import service.admin.AdminService;
+import service.core.ServerManager;
 
 @Slf4j
 public class ServerMain {

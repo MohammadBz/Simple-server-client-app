@@ -3,14 +3,14 @@ package handler.server;
 import exception.AuthenticationException;
 import exception.MessageProcessingException;
 import exception.ValidationException;
-import application.core.ServerManager;
+import service.core.ServerManager;
 import infrastructure.serialization.JsonUtil;
 import protocol.message.Message;
 import protocol.response.ResponseMessages;
 import protocol.dto.auth.SignupRequestDTO;
 import lombok.extern.slf4j.Slf4j;
-import application.auth.AuthService;
-import application.core.ClientHandler;
+import service.auth.AuthService;
+import service.core.ClientHandler;
 import validation.ValidationUtil;
 import protocol.message.factory.ResponseFactory;
 

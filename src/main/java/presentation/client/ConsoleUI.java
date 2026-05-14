@@ -1,7 +1,7 @@
 package presentation.client;
 
 
-import application.client.ClientSession;
+import service.client.ClientSession;
 
 import exception.ConnectionException;
 import lombok.extern.slf4j.Slf4j;

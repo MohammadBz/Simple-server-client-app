@@ -7,11 +7,11 @@ import exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
 import domain.chat.MessageStatus;
-import application.core.ClientHandler;
+import service.core.ClientHandler;
 import protocol.message.Message;
 import protocol.message.factory.ResponseFactory;
 import protocol.response.ResponseMessages;
-import application.core.ServerManager;
+import service.core.ServerManager;
 import infrastructure.serialization.JsonUtil;
 import validation.MessageValidator;
 

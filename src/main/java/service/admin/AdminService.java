@@ -1,4 +1,4 @@
-package application.admin;
+package service.admin;
 
 import lombok.extern.slf4j.Slf4j;
 import protocol.dto.admin.OnlineUserDTO;

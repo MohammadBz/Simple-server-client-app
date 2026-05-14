@@ -5,8 +5,8 @@ import protocol.message.Message;
 import protocol.message.factory.ResponseFactory;
 import protocol.response.ResponseMessages;
 import exception.AuthenticationException;
-import application.core.ClientHandler;
-import application.core.ServerManager;
+import service.core.ClientHandler;
+import service.core.ServerManager;
 
 import java.util.ArrayList;
 import java.util.List;

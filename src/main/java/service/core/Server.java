@@ -1,7 +1,7 @@
-package application.core;
+package service.core;
 
-import application.auth.AuthService;
-import application.session.ConnectionRegistry;
+import service.auth.AuthService;
+import service.session.ConnectionRegistry;
 import exception.ConnectionException;
 import handler.server.HandlerFactory;
 import lombok.extern.slf4j.Slf4j;

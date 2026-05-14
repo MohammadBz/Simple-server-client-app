@@ -1,4 +1,4 @@
-package application.client;
+package service.client;
 
 import exception.ConnectionException;
 import protocol.dto.chat.DeliveryStatusDTO;

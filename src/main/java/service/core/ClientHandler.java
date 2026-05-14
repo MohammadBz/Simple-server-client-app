@@ -1,7 +1,7 @@
-package application.core;
+package service.core;
 
-import application.session.ConnectionRegistry;
-import application.session.Session;
+import service.session.ConnectionRegistry;
+import service.session.Session;
 import protocol.message.Message;
 import protocol.message.MessageType;
 import exception.ConnectionException;
@@ -45,7 +45,7 @@ public class ClientHandler implements Runnable {
         log.info("Client connected");
         try {
             while (running) {
-                Message message = Message.fromJson(connectionManager.receive());
+                Message message = Message.fromJson(connectionManager.receive()); // unmarshall fucntion & btter to implement the flow with functions
                 log.debug("Received message type: {}  from: {}", message.getType(), clientId);
                 MessageHandler handler = handlerFactory.getHandler(message.getType());
 

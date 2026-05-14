@@ -1,4 +1,4 @@
-package application.client;
+package service.client;
 
 import protocol.dto.auth.LoginRequestDTO;
 import protocol.dto.auth.SignupRequestDTO;

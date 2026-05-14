@@ -1,4 +1,4 @@
-package application.auth;
+package service.auth;
 
 import domain.user.User;
 import exception.AuthenticationException;

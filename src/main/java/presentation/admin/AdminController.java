@@ -1,6 +1,6 @@
 package presentation.admin;
 
-import application.admin.AdminService;
+import service.admin.AdminService;
 import protocol.dto.admin.OnlineUserDTO;
 
 import java.util.List;

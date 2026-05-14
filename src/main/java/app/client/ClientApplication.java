@@ -1,8 +1,8 @@
 package app.client;
 
-import application.client.Client;
-import application.client.ClientService;
-import application.client.ClientSession;
+import service.client.Client;
+import service.client.ClientService;
+import service.client.ClientSession;
 import presentation.client.ClientController;
 import presentation.client.ConsoleUI;
 import exception.ConnectionException;

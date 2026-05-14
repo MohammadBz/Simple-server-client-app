@@ -1,8 +1,8 @@
-package application.core;
+package service.core;
 
-import application.admin.AdminOperations;
-import application.messaging.RoutingService;
-import application.session.SessionRegistry;
+import service.admin.AdminOperations;
+import service.messaging.RoutingService;
+import service.session.SessionRegistry;
 import exception.MessageRoutingException;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;

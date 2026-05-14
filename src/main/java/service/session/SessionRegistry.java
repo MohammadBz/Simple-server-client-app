@@ -1,7 +1,7 @@
-package application.session;
+package service.session;
 
 import lombok.extern.slf4j.Slf4j;
-import application.core.ClientHandler;
+import service.core.ClientHandler;
 import protocol.response.ResponseMessages;
 
 import java.util.List;

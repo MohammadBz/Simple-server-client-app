@@ -1,13 +1,12 @@
-package application.session;
+package service.client;
 
-public class Session {
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
+public class ClientSession {
 
     private String username;
     private boolean authenticated;
-
-    public Session() {
-        this.authenticated = false;
-    }
 
     public void authenticate(String username) {
         this.username = username;
@@ -15,6 +14,8 @@ public class Session {
     }
 
     public void clear() {
+        log.info("Clearing client session");
+
         this.username = null;
         this.authenticated = false;
     }

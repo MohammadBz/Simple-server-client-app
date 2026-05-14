@@ -1,7 +1,7 @@
 package presentation.client;
 
-import application.client.ClientService;
-import application.client.ClientSession;
+import service.client.ClientService;
+import service.client.ClientSession;
 import app.client.event.ClientEventHandler;
 import domain.chat.MessageStatus;
 import lombok.RequiredArgsConstructor;
