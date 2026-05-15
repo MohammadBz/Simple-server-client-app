@@ -1,6 +1,6 @@
 package exception;
 
-public class MessageRoutingException extends AppException {
+public class MessageRoutingException extends BusinessException {
     public MessageRoutingException(String message) {
         super(message);
     }

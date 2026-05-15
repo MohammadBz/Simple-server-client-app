@@ -1,6 +1,6 @@
 package exception;
 
-public class AdminOperationException extends AppException {
+public class AdminOperationException extends BusinessException {
     public AdminOperationException(String message) {
         super(message);
     }
