@@ -44,12 +44,12 @@ public class ConsoleUI {
 
             } catch (ConnectionException e) {
                 log.error("Connection Error : {}", e.getMessage());
-                System.out.println("Connection error: " + e.getMessage());
+                showMessage("Connection error: " + e.getMessage());
                 break;
 
             } catch (Exception e) {
                 log.error("Unexpected error : {}", e.getMessage());
-                System.out.println("Unexpected error occurred");
+                showMessage("Unexpected error");
             }
         }
     }
@@ -62,7 +62,7 @@ public class ConsoleUI {
             case 1 -> handleLogin();
             case 2 -> handleSignup();
             case 3 -> handleExit();
-            default -> System.out.println("Invalid option");
+            default -> showMessage("Invalid option");
         }
     }
 
@@ -74,29 +74,29 @@ public class ConsoleUI {
             case 1 -> handleSendMessage();
             case 2 -> handleOnlineUsers();
             case 3 -> handleLogout();
-            default -> System.out.println("Invalid option");
+            default -> showMessage("Invalid option");
         }
     }
 
     private void showChatMenu() {
-        System.out.println("1. Send Message");
-        System.out.println("2. Online Users");
-        System.out.println("3. Logout");
+        showMessage("1. Send Message");
+        showMessage("2. Online Users");
+        showMessage("3. Logout");
     }
 
     private void showAuthMenu() {
-        System.out.println("1. Login");
-        System.out.println("2. Signup");
-        System.out.println("3. EXit");
-        System.out.print("Choose: ");
+        showMessage("1. Login");
+        showMessage("2. Signup");
+        showMessage("3. Exit");
+        showMessage("Choose :");
     }
 
     private void handleLogin() throws ConnectionException {
         log.debug("User selected login");
-        System.out.print("Username: ");
+        showMessage("Username: ");
         String username = scanner.nextLine();
 
-        System.out.print("Password: ");
+        showMessage("Password: ");
         String password = scanner.nextLine();
 
         controller.login(username, password);
@@ -104,10 +104,10 @@ public class ConsoleUI {
 
     private void handleSignup() throws ConnectionException {
         log.debug("User selected signUp");
-        System.out.print("Username: ");
+        showMessage("Username: ");
         String username = scanner.nextLine();
 
-        System.out.print("Password: ");
+        showMessage("Password: ");
         String password = scanner.nextLine();
         controller.signup(username, password);
 
@@ -115,10 +115,10 @@ public class ConsoleUI {
 
     private void handleSendMessage() throws ConnectionException {
 
-        System.out.print("Receiver username: ");
+        showMessage("Receiver username: ");
         String receiver = scanner.nextLine();
 
-        System.out.print("Message content: ");
+        showMessage("Message content: ");
         String content = scanner.nextLine();
 
         controller.sendMessage(receiver, content);
@@ -138,7 +138,7 @@ public class ConsoleUI {
 
     private int readInt2() {
         while (!scanner.hasNextInt()) {
-            System.out.println("Please enter a valid number.");
+            showMessage("Please enter a valid number.");
             scanner.nextLine();
         }
         int value = scanner.nextInt();
@@ -151,19 +151,19 @@ public class ConsoleUI {
     }
 
     public void showIncomingMessage(String sender, String content) {
-        System.out.println();
-        System.out.println("Message from " + sender + ":");
-        System.out.println(content);
+        showMessage("");
+        showMessage("Message from " + sender + ":");
+        showMessage(content);
     }
 
     public void showOnlineUsers(List<String> users) {
         if (users.isEmpty()) {
-            System.out.println("No one is online");
+            showMessage("There are no online users");
             return;
         }
-        System.out.println("Online Users:");
+        showMessage("Online Users:");
         for (String user : users) {
-            System.out.println("- " + user);
+            showMessage(" - " + user);
         }
     }
 }
