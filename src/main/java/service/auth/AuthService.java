@@ -9,7 +9,7 @@ public class AuthService {
 
     private final ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
 
-    public void signup(String username, String password) throws AuthenticationException {
+    public void signup(String username, String password) {
         User newUser = new User(username, password);
 
         if (userExists(username)) {
@@ -18,7 +18,7 @@ public class AuthService {
         users.put(username, newUser);
     }
 
-    public void login(String username, String password) throws AuthenticationException {
+    public void login(String username, String password) {
         User user = users.get(username);
         if (!userExists(username)) {
             throw new AuthenticationException("User not found");

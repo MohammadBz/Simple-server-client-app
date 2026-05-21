@@ -47,9 +47,6 @@ public class SignupHandler implements MessageHandler {
         } catch (AuthenticationException e) {
             log.warn("Signup failed - user '{}' already exists", request.getUsername());
             clientHandler.send(ResponseFactory.signupFailure(ResponseMessages.USER_EXISTS));
-        } catch (Exception e) {
-            log.error("Unexpected error in SignupHandler", e);
-            throw new MessageProcessingException("SignupHandler failed");
         }
     }
 

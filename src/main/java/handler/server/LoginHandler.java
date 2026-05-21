@@ -51,9 +51,6 @@ public class LoginHandler implements MessageHandler {
         } catch (ValidationException e) {
             log.warn("Invalid login input from {}: {}", message.getSender(), e.getMessage());
             clientHandler.send(ResponseFactory.loginFailure(ResponseMessages.EMPTY_FIELDS));
-        } catch (Exception e) {
-            log.error("Unexpected error in LoginHandler", e);
-            throw new MessageProcessingException("LoginHandler failed");
         }
     }
 

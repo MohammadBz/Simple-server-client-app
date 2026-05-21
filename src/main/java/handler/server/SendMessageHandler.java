@@ -50,7 +50,6 @@ public class SendMessageHandler implements MessageHandler {
             log.error("Failed to deliver Message", e);
 
         } catch (AuthenticationException e) {
-
             clientHandler.send(ResponseFactory.deliveryStatus(null, MessageStatus.FAILED, ResponseMessages.UNAUTHORIZED));
             log.error("Failed to deliver Message", e);
         }

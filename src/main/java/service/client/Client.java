@@ -19,38 +19,21 @@ public class Client {
     }
 
     public void connect(String host, int port) throws ConnectionException {
-        try {
-            connectionManager.connect(host, port);
+        connectionManager.connect(host, port);
 
-            listener = new ClientListener(connectionManager, eventHandler);
-            new Thread(listener).start();
-
-        } catch (ConnectionException e) {
-            log.error("Failed to connect to server", e);
-            throw e;
-        }
+        listener = new ClientListener(connectionManager, eventHandler);
+        new Thread(listener).start();
     }
 
     public void send(Message message) throws ConnectionException {
-        try {
-            connectionManager.send(message.toJson());
-        } catch (ConnectionException e) {
-            log.error("Failed to send message", e);
-            throw e;
-        }
+        connectionManager.send(message.toJson());
     }
 
     public void disconnect() {
         if (listener != null) {
             listener.stop();
         }
-
-        try {
-            connectionManager.close();
-        } catch (Exception e) {
-            log.warn("Error while closing connection", e);
-        }
-
+        connectionManager.close();
         log.info("Client disconnected");
     }
 
