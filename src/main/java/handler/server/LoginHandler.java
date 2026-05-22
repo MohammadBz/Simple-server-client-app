@@ -1,5 +1,6 @@
 package handler.server;
 
+import exception.LoginValidationException;
 import protocol.response.ResponseMessages;
 import protocol.dto.auth.LoginRequestDTO;
 import exception.AuthenticationException;
@@ -33,8 +34,11 @@ public class LoginHandler implements MessageHandler {
 
         try {
             log.debug("Handling LOGIN_REQUEST from {}", message.getSender());
-
-            ValidationUtil.validateCredentials(request.getUsername(), request.getPassword());
+            try {
+                ValidationUtil.validateCredentials(request.getUsername(), request.getPassword());
+            } catch (ValidationException e) {
+                throw new LoginValidationException(e.getMessage());
+            }
 
             authService.login(request.getUsername(), request.getPassword());
 
@@ -46,13 +50,12 @@ public class LoginHandler implements MessageHandler {
 
         } catch (AuthenticationException e) {
             log.warn("Failed login attempt for user '{}' : {}", request.getUsername(), e.getMessage());
-            clientHandler.send(ResponseFactory.loginFailure(ResponseMessages.LOGIN_FAILED));    
+            clientHandler.send(ResponseFactory.loginFailure(ResponseMessages.LOGIN_FAILED));
 
         } catch (ValidationException e) {
             log.warn("Invalid login input from {}: {}", message.getSender(), e.getMessage());
             clientHandler.send(ResponseFactory.loginFailure(ResponseMessages.EMPTY_FIELDS));
         }
     }
-
 
 }
