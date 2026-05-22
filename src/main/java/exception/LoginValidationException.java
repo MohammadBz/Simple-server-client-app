@@ -1,7 +1,14 @@
 package exception;
 
 public class LoginValidationException extends ValidationException {
-    public LoginValidationException(String message) {
+    private final String username;
+
+    public LoginValidationException(String message, String username) {
         super(message);
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
