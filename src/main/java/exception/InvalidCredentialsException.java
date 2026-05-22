@@ -1,7 +1,14 @@
 package exception;
 
 public class InvalidCredentialsException extends AuthenticationException {
-    public InvalidCredentialsException(String message) {
+    private final String username;
+
+    public InvalidCredentialsException(String message, String username) {
         super(message);
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
