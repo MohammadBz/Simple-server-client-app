@@ -46,7 +46,7 @@ public class LoginHandler implements MessageHandler {
 
         } catch (AuthenticationException e) {
             log.warn("Failed login attempt for user '{}' : {}", request.getUsername(), e.getMessage());
-            clientHandler.send(ResponseFactory.loginFailure(ResponseMessages.LOGIN_FAILED));
+            clientHandler.send(ResponseFactory.loginFailure(ResponseMessages.LOGIN_FAILED));    
 
         } catch (ValidationException e) {
             log.warn("Invalid login input from {}: {}", message.getSender(), e.getMessage());

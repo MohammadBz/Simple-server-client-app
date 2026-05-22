@@ -2,6 +2,7 @@ package service.auth;
 
 import domain.user.User;
 import exception.AuthenticationException;
+import exception.InvalidCredentialsException;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,10 +22,10 @@ public class AuthService {
     public void login(String username, String password) {
         User user = users.get(username);
         if (!userExists(username)) {
-            throw new AuthenticationException("User not found");
+            throw new InvalidCredentialsException("User not found");
         }
         if (userExists(username) && !user.getPassword().equals(password)) {
-            throw new AuthenticationException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         }
     }
 
