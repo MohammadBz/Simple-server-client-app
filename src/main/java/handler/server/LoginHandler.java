@@ -37,7 +37,7 @@ public class LoginHandler implements MessageHandler {
             try {
                 ValidationUtil.validateCredentials(request.getUsername(), request.getPassword());
             } catch (ValidationException e) {
-                throw new LoginValidationException(e.getMessage());
+                throw new LoginValidationException(e.getMessage(), message.getSender());
             }
 
             authService.login(request.getUsername(), request.getPassword());

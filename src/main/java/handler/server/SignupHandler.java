@@ -34,7 +34,7 @@ public class SignupHandler implements MessageHandler {
             try {
                 ValidationUtil.validateCredentials(request.getUsername(), request.getPassword());
             } catch (ValidationException e) {
-                throw new SignupValidationException(e.getMessage());
+                throw new SignupValidationException(e.getMessage(), request.getUsername());
             }
             authService.signup(request.getUsername(), request.getPassword());
 

@@ -15,7 +15,7 @@ public class AuthService {
         User newUser = new User(username, password);
 
         if (userExists(username)) {
-            throw new UserDuplicateConflictException("User already exists");
+            throw new UserDuplicateConflictException("User already exists", username);
         }
         users.put(username, newUser);
     }
