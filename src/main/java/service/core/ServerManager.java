@@ -29,7 +29,7 @@ public class ServerManager implements AdminOperations {
         sessionRegistry.unregister(username);
     }
 
-    public ChatMessage sendMessage(ChatMessage chatMessage) throws MessageRoutingException {
+    public ChatMessage sendMessage(ChatMessage chatMessage) {
         return routingService.route(chatMessage);
     }
 

@@ -1,5 +1,6 @@
 package validation;
 
+import exception.MessageValidationException;
 import exception.ValidationException;
 
 public final class MessageValidator {
@@ -9,23 +10,23 @@ public final class MessageValidator {
     private MessageValidator() {
     }
 
-    public static void validateRecipient(String recipient) throws ValidationException {
+    public static void validateRecipient(String recipient) {
         if (recipient == null || recipient.trim().isEmpty()) {
-            throw new ValidationException("Recipient cannot be empty.");
+            throw new MessageValidationException("Recipient cannot be empty.");
         }
     }
 
-    public static void validateContent(String content) throws ValidationException {
+    public static void validateContent(String content) {
         if (content == null || content.trim().isEmpty()) {
-            throw new ValidationException("Message content cannot be empty.");
+            throw new MessageValidationException("Message content cannot be empty.");
         }
 
         if (content.length() > MAX_MESSAGE_LENGTH) {
-            throw new ValidationException("Message exceeds maximum allowed length.");
+            throw new MessageValidationException("Message exceeds maximum allowed length.");
         }
     }
 
-    public static void validateMessage(String recipient, String content) throws ValidationException {
+    public static void validateMessage(String recipient, String content) {
         validateRecipient(recipient);
         validateContent(content);
     }
