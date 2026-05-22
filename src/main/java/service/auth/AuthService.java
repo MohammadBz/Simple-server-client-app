@@ -3,6 +3,7 @@ package service.auth;
 import domain.user.User;
 import exception.AuthenticationException;
 import exception.InvalidCredentialsException;
+import exception.UserDuplicateConflictException;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,7 +15,7 @@ public class AuthService {
         User newUser = new User(username, password);
 
         if (userExists(username)) {
-            throw new AuthenticationException("User already exists");
+            throw new UserDuplicateConflictException("User already exists");
         }
         users.put(username, newUser);
     }
