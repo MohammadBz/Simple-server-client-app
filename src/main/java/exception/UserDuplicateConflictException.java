@@ -1,7 +1,14 @@
 package exception;
 
 public class UserDuplicateConflictException extends RuntimeException {
-    public UserDuplicateConflictException(String message) {
+    private final String username;
+
+    public UserDuplicateConflictException(String message, String username) {
         super(message);
+        this.username = username;
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
