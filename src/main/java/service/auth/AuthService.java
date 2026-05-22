@@ -23,10 +23,10 @@ public class AuthService {
     public void login(String username, String password) {
         User user = users.get(username);
         if (!userExists(username)) {
-            throw new InvalidCredentialsException("User not found");
+            throw new InvalidCredentialsException("User not found", username);
         }
         if (userExists(username) && !user.getPassword().equals(password)) {
-            throw new InvalidCredentialsException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials", username);
         }
     }
 

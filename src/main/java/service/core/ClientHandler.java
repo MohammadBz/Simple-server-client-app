@@ -91,7 +91,7 @@ public class ClientHandler implements Runnable {
 
         } catch (Exception e) {
             log.error("Failed to deliver message : {} ", e.getMessage());
-            throw new MessageRoutingException("");
+            throw new MessageRoutingException("Unknown error when delivering message", e);
         }
     }
 
