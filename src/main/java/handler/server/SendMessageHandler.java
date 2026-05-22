@@ -1,5 +1,6 @@
 package handler.server;
 
+import exception.UnauthorizedException;
 import protocol.dto.chat.SendMessageRequestDTO;
 import exception.AuthenticationException;
 import exception.MessageRoutingException;
@@ -14,6 +15,7 @@ import protocol.response.ResponseMessages;
 import service.core.ServerManager;
 import infrastructure.serialization.JsonUtil;
 import validation.MessageValidator;
+
 
 @Slf4j
 public class SendMessageHandler implements MessageHandler {
@@ -31,7 +33,7 @@ public class SendMessageHandler implements MessageHandler {
 
         try {
             if (!clientHandler.getSession().isAuthenticated()) {
-                throw new AuthenticationException("User not authenticated.");
+                throw new UnauthorizedException("User not authenticated.");
             }
 
             MessageValidator.validateMessage(request.getRecipient(), request.getContent());
@@ -49,7 +51,7 @@ public class SendMessageHandler implements MessageHandler {
             clientHandler.send(ResponseFactory.deliveryStatus(null, MessageStatus.FAILED, e.getMessage()));
             log.error("Failed to deliver Message", e);
 
-        } catch (AuthenticationException e) {
+        } catch (UnauthorizedException e) {
             clientHandler.send(ResponseFactory.deliveryStatus(null, MessageStatus.FAILED, ResponseMessages.UNAUTHORIZED));
             log.error("Failed to deliver Message", e);
         }

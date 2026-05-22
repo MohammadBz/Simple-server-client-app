@@ -1,6 +1,7 @@
 package handler.server;
 
 import domain.chat.MessageStatus;
+import exception.UnauthorizedException;
 import protocol.message.Message;
 import protocol.message.factory.ResponseFactory;
 import protocol.response.ResponseMessages;
@@ -24,14 +25,14 @@ public class OnlineUsersHandler implements MessageHandler {
 
         try {
             if (!clientHandler.getSession().isAuthenticated()) {
-                throw new AuthenticationException("User not authenticated.");
+                throw new UnauthorizedException("User not authenticated.");
             }
             List<String> users = new ArrayList<>(serverManager.getOnlineUsers());
 
             users.remove(clientHandler.getSession().getUsername());
             clientHandler.send(ResponseFactory.onlineUsers(users));
 
-        } catch (AuthenticationException e) {
+        } catch (UnauthorizedException e) {
             clientHandler.send(ResponseFactory.deliveryStatus(null, MessageStatus.FAILED, ResponseMessages.UNAUTHORIZED));
         }
     }
