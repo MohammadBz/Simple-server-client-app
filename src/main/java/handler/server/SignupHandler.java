@@ -2,6 +2,7 @@ package handler.server;
 
 import exception.AuthenticationException;
 import exception.MessageProcessingException;
+import exception.SignupValidationException;
 import exception.ValidationException;
 import service.core.ServerManager;
 import infrastructure.serialization.JsonUtil;
@@ -30,9 +31,11 @@ public class SignupHandler implements MessageHandler {
 
         try {
             log.debug("Handling SIGNUP_REQUEST from {}", message.getSender());
-
-            ValidationUtil.validateCredentials(request.getUsername(), request.getPassword());
-
+            try {
+                ValidationUtil.validateCredentials(request.getUsername(), request.getPassword());
+            } catch (ValidationException e) {
+                throw new SignupValidationException(e.getMessage());
+            }
             authService.signup(request.getUsername(), request.getPassword());
 
             clientHandler.getSession().authenticate(request.getUsername());
