@@ -19,7 +19,7 @@ public class JsonUtil {
         try {
             return objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to convert object to JSON", e);
+            throw new RuntimeException("Failed to convert object to JSON", e); //need to have marshall and unmarshall exception for here
         }
     }
 
