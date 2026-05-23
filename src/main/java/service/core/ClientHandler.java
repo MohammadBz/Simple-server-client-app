@@ -1,12 +1,10 @@
 package service.core;
 
+import exception.*;
 import service.session.ConnectionRegistry;
 import service.session.Session;
 import protocol.message.Message;
 import protocol.message.MessageType;
-import exception.ConnectionException;
-import exception.MessageProcessingException;
-import exception.MessageRoutingException;
 import handler.server.HandlerFactory;
 import handler.server.MessageHandler;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +22,8 @@ public class ClientHandler implements Runnable {
     private final ConnectionManager connectionManager;
     private final HandlerFactory handlerFactory;
     private final ConnectionRegistry connectionRegistry;
+    private final BusinessErrorResolver businessErrorResolver;
+    private final SystemErrorResolver systemErrorResolver;
     ServerManager serverManager;
     private final Session session;
     private volatile boolean running = true;
@@ -32,39 +32,52 @@ public class ClientHandler implements Runnable {
 
     private final String clientId = UUID.randomUUID().toString();
 
-    public ClientHandler(ConnectionManager connectionManager, HandlerFactory handlerFactory, ServerManager serverManager, ConnectionRegistry connectionRegistry) {
+    public ClientHandler(ConnectionManager connectionManager, HandlerFactory handlerFactory, ServerManager serverManager, ConnectionRegistry connectionRegistry, BusinessErrorResolver businessErrorResolver,
+                         SystemErrorResolver systemErrorResolver) {
         this.connectionManager = connectionManager;
         this.handlerFactory = handlerFactory;
         this.serverManager = serverManager;
         this.connectionRegistry = connectionRegistry;
+        this.businessErrorResolver = businessErrorResolver;
+        this.systemErrorResolver = systemErrorResolver;
         this.session = new Session();
     }
 
     @Override
     public void run() {
-        log.info("Client connected");
+        log.info("Client connected: {}", clientId);
         try {
             while (running) {
-                Message message = Message.fromJson(connectionManager.receive()); // unmarshall fucntion & btter to implement the flow with functions
-                log.debug("Received message type: {}  from: {}", message.getType(), clientId);
-                MessageHandler handler = handlerFactory.getHandler(message.getType());
-
-                if (handler == null) {
-                    log.warn("No handler for type: {}   from: {}", message.getType(), clientId);
-                    send(new Message(MessageType.ERROR, "app", "Unsupported message type"));
-                    continue;
-                } //
-                handler.handle(message, this);
+                String rawJson = connectionManager.receive();
+                processMessage(rawJson);
             }
-
         } catch (ConnectionException e) {
-            log.info("Client {} disconnected: {}", clientId, e.getMessage());
-        } catch (MessageProcessingException e) {
-            log.error("Processing error :{}", e.getMessage());
+            systemErrorResolver.resolve(e, this);
         } catch (Exception e) {
-            log.error("Unexpected error in client handler, client id:{} -> {}", clientId, e.getMessage(), e);
+            log.error("Fatal error in client loop for {}: {}", clientId, e.getMessage(), e);
         } finally {
             cleanup();
+        }
+    }
+
+    private void processMessage(String rawJson) {
+        try {
+            Message message = JsonUtil.fromJson(rawJson, Message.class);
+
+            log.debug("Received message type: {} from: {}", message.getType(), clientId);
+
+            MessageHandler handler = handlerFactory.getHandler(message.getType());
+            if (handler == null) {
+                log.warn("No handler found for type: {} from: {}", message.getType(), clientId);
+                this.send(ResponseFactory.systemNotification("Unsupported message type"));
+                return;
+            }
+            handler.handle(message, this);
+
+        } catch (BusinessException e) {
+            businessErrorResolver.resolve(e, this);
+        } catch (Exception e) {
+            systemErrorResolver.resolve(e, this);
         }
     }
 
