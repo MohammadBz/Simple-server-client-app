@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import exception.JsonDeserializationException;
+import exception.JsonSerializationException;
 
 
 public class JsonUtil {
@@ -19,7 +21,7 @@ public class JsonUtil {
         try {
             return objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Failed to convert object to JSON", e); //need to have marshall and unmarshall exception for here
+            throw new JsonSerializationException(obj.getClass().getSimpleName(), e);
         }
     }
 
@@ -27,7 +29,7 @@ public class JsonUtil {
         try {
             return objectMapper.readValue(json, clazz);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to parse JSON", e);
+            throw new JsonDeserializationException(json, e);
         }
     }
 }
