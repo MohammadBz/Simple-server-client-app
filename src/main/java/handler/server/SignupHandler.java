@@ -29,28 +29,20 @@ public class SignupHandler implements MessageHandler {
 
         SignupRequestDTO request = JsonUtil.fromJson((String) message.getPayload(), SignupRequestDTO.class);
 
+        log.debug("Handling SIGNUP_REQUEST from {}", message.getSender());
         try {
-            log.debug("Handling SIGNUP_REQUEST from {}", message.getSender());
-            try {
-                ValidationUtil.validateCredentials(request.getUsername(), request.getPassword());
-            } catch (ValidationException e) {
-                throw new SignupValidationException(e.getMessage(), request.getUsername());
-            }
-            authService.signup(request.getUsername(), request.getPassword());
-
-            clientHandler.getSession().authenticate(request.getUsername());
-
-            log.info("User '{}' signed up successfully", request.getUsername());
-
-            clientHandler.send(ResponseFactory.signupSuccess());
-
+            ValidationUtil.validateCredentials(request.getUsername(), request.getPassword());
         } catch (ValidationException e) {
-            log.warn("Invalid signup input from {}: {}", message.getSender(), e.getMessage());
-            clientHandler.send(ResponseFactory.signupFailure(ResponseMessages.EMPTY_FIELDS));
-        } catch (AuthenticationException e) {
-            log.warn("Signup failed - user '{}' already exists", request.getUsername());
-            clientHandler.send(ResponseFactory.signupFailure(ResponseMessages.USER_EXISTS));
+            throw new SignupValidationException(e.getMessage(), request.getUsername());
         }
+        authService.signup(request.getUsername(), request.getPassword());
+
+        clientHandler.getSession().authenticate(request.getUsername());
+
+        log.info("User '{}' signed up successfully", request.getUsername());
+
+        clientHandler.send(ResponseFactory.signupSuccess());
+
     }
 
 }

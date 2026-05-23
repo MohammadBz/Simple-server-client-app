@@ -31,29 +31,20 @@ public class SendMessageHandler implements MessageHandler {
 
         SendMessageRequestDTO request = JsonUtil.fromJson(message.getPayload(), SendMessageRequestDTO.class);
 
-        try {
-            if (!clientHandler.getSession().isAuthenticated()) {
-                throw new UnauthorizedException("User not authenticated.");
-            }
-
-            MessageValidator.validateMessage(request.getRecipient(), request.getContent());
-
-            ChatMessage chatMessage = new ChatMessage(clientHandler.getSession().getUsername(), request.getRecipient(), request.getContent());
-
-            ChatMessage deliveredMessage = serverManager.sendMessage(chatMessage);
-
-            Message response = ResponseFactory.deliveryStatus(deliveredMessage.getId(), deliveredMessage.getStatus(), ResponseMessages.MESSAGE_SENT);
-
-            clientHandler.send(response);
-
-        } catch (ValidationException | MessageRoutingException e) {
-
-            clientHandler.send(ResponseFactory.deliveryStatus(null, MessageStatus.FAILED, e.getMessage()));
-            log.error("Failed to deliver Message", e);
-
-        } catch (UnauthorizedException e) {
-            clientHandler.send(ResponseFactory.deliveryStatus(null, MessageStatus.FAILED, ResponseMessages.UNAUTHORIZED));
-            log.error("Failed to deliver Message", e);
+        if (!clientHandler.getSession().isAuthenticated()) {
+            throw new UnauthorizedException("User not authenticated.");
         }
+
+        MessageValidator.validateMessage(request.getRecipient(), request.getContent());
+
+        ChatMessage chatMessage = new ChatMessage(clientHandler.getSession().getUsername(), request.getRecipient(), request.getContent());
+
+        ChatMessage deliveredMessage = serverManager.sendMessage(chatMessage);
+
+        Message response = ResponseFactory.deliveryStatus(deliveredMessage.getId(), deliveredMessage.getStatus(), ResponseMessages.MESSAGE_SENT);
+
+        clientHandler.send(response);
+
+
     }
 }

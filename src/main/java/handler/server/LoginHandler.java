@@ -32,26 +32,17 @@ public class LoginHandler implements MessageHandler {
 
         LoginRequestDTO request = JsonUtil.fromJson((String) message.getPayload(), LoginRequestDTO.class);
 
-        try {
-            log.debug("Handling LOGIN_REQUEST from {}", message.getSender());
-            validateLogin(request);
 
-            authService.login(request.getUsername(), request.getPassword());
+        log.debug("Handling LOGIN_REQUEST from {}", message.getSender());
+        validateLogin(request);
 
-            clientHandler.getSession().authenticate(request.getUsername());
-            serverManager.registerSession(request.getUsername(), clientHandler);
-            log.info("User '{}' logged in successfully", request.getUsername());
+        authService.login(request.getUsername(), request.getPassword());
 
-            clientHandler.send(ResponseFactory.loginSuccess());
+        clientHandler.getSession().authenticate(request.getUsername());
+        serverManager.registerSession(request.getUsername(), clientHandler);
+        log.info("User '{}' logged in successfully", request.getUsername());
 
-        } catch (AuthenticationException e) {
-            log.warn("Failed login attempt for user '{}' : {}", request.getUsername(), e.getMessage());
-            clientHandler.send(ResponseFactory.loginFailure(ResponseMessages.LOGIN_FAILED));
-
-        } catch (ValidationException e) {
-            log.warn("Invalid login input from {}: {}", message.getSender(), e.getMessage());
-            clientHandler.send(ResponseFactory.loginFailure(ResponseMessages.EMPTY_FIELDS));
-        }
+        clientHandler.send(ResponseFactory.loginSuccess());
     }
 
     private void validateLogin(LoginRequestDTO request) {

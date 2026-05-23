@@ -23,17 +23,12 @@ public class OnlineUsersHandler implements MessageHandler {
     @Override
     public void handle(Message message, ClientHandler clientHandler) {
 
-        try {
-            if (!clientHandler.getSession().isAuthenticated()) {
-                throw new UnauthorizedException("User not authenticated.");
-            }
-            List<String> users = new ArrayList<>(serverManager.getOnlineUsers());
-
-            users.remove(clientHandler.getSession().getUsername());
-            clientHandler.send(ResponseFactory.onlineUsers(users));
-
-        } catch (UnauthorizedException e) {
-            clientHandler.send(ResponseFactory.deliveryStatus(null, MessageStatus.FAILED, ResponseMessages.UNAUTHORIZED));
+        if (!clientHandler.getSession().isAuthenticated()) {
+            throw new UnauthorizedException("User not authenticated.");
         }
+        List<String> users = new ArrayList<>(serverManager.getOnlineUsers());
+        users.remove(clientHandler.getSession().getUsername());
+        clientHandler.send(ResponseFactory.onlineUsers(users));
+
     }
 }
