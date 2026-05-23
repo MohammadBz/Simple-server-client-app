@@ -34,11 +34,7 @@ public class LoginHandler implements MessageHandler {
 
         try {
             log.debug("Handling LOGIN_REQUEST from {}", message.getSender());
-            try {
-                ValidationUtil.validateCredentials(request.getUsername(), request.getPassword());
-            } catch (ValidationException e) {
-                throw new LoginValidationException(e.getMessage(), message.getSender());
-            }
+            validateLogin(request);
 
             authService.login(request.getUsername(), request.getPassword());
 
@@ -55,6 +51,14 @@ public class LoginHandler implements MessageHandler {
         } catch (ValidationException e) {
             log.warn("Invalid login input from {}: {}", message.getSender(), e.getMessage());
             clientHandler.send(ResponseFactory.loginFailure(ResponseMessages.EMPTY_FIELDS));
+        }
+    }
+
+    private void validateLogin(LoginRequestDTO request) {
+        try {
+            ValidationUtil.validateCredentials(request.getUsername(), request.getPassword());
+        } catch (ValidationException e) {
+            throw new LoginValidationException(request.getUsername(), e.getMessage());
         }
     }
 
