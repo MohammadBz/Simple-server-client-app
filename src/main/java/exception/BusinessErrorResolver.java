@@ -16,13 +16,13 @@ public class BusinessErrorResolver implements ErrorResolver {
     private final Map<Class<? extends Exception>, ErrorAction> registry = new HashMap<>();
 
     public BusinessErrorResolver() {
-        registry.put(LoginValidationException.class, new LoginValidationExceptionErrorAction());
-        registry.put(SignupValidationException.class, new SignupValidationExceptionErrorAction());
-        registry.put(InvalidCredentialsException.class, new InvalidCredentialsExceptionErrorAction());
-        registry.put(UserDuplicateConflictException.class, new UserDuplicateConflictExceptionErrorAction());
-        registry.put(UnauthorizedException.class, new UnauthorizedExceptionErrorAction());
-        registry.put(MessageValidationException.class, new MessageValidationExceptionErrorAction());
-        registry.put(MessageRoutingException.class, new MessageRoutingExceptionErrorAction());
+        register(LoginValidationException.class, new LoginValidationExceptionErrorAction());
+        register(SignupValidationException.class, new SignupValidationExceptionErrorAction());
+        register(InvalidCredentialsException.class, new InvalidCredentialsExceptionErrorAction());
+        register(UserDuplicateConflictException.class, new UserDuplicateConflictExceptionErrorAction());
+        register(UnauthorizedException.class, new UnauthorizedExceptionErrorAction());
+        register(MessageValidationException.class, new MessageValidationExceptionErrorAction());
+        register(MessageRoutingException.class, new MessageRoutingExceptionErrorAction());
     }
 
     @Override
