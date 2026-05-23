@@ -27,6 +27,6 @@ public class DisconnectHandler implements MessageHandler {
         } catch (Exception ignored) {
             log.warn("Failed to send disconnect response");
         }
-        clientHandler.close();
+        clientHandler.stop();
     }
 }
