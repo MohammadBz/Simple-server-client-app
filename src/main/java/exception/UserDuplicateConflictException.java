@@ -1,6 +1,6 @@
 package exception;
 
-public class UserDuplicateConflictException extends RuntimeException {
+public class UserDuplicateConflictException extends BusinessException {
     private final String username;
 
     public UserDuplicateConflictException(String message, String username) {
