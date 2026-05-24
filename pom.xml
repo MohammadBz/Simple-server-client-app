@@ -77,7 +77,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>app.server.ServerMain</mainClass>
+                            <mainClass>launcher.server.ServerMain</mainClass>
                             <systemProperties>
                                 <systemProperty>
                                     <key>logback.configurationFile</key>
@@ -94,7 +94,7 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>app.client.ClientMain</mainClass>
+                            <mainClass>launcher.client.ClientMain</mainClass>
                             <systemProperties>
                                 <systemProperty>
                                     <key>logback.configurationFile</key>

@@ -2,12 +2,12 @@ package service.client;
 
 import protocol.dto.auth.LoginRequestDTO;
 import protocol.dto.auth.SignupRequestDTO;
-import exception.ConnectionException;
-import exception.ValidationException;
+import exception.technical.ConnectionException;
+import exception.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
 import protocol.message.MessageType;
-import validation.ValidationUtil;
+import service.common.validation.ValidationUtil;
 import infrastructure.serialization.JsonUtil;
 import protocol.message.factory.RequestFactory;
 

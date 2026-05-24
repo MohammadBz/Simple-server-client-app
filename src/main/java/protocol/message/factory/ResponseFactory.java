@@ -37,14 +37,14 @@ public final class ResponseFactory {
 
         DeliveryStatusDTO dto = new DeliveryStatusDTO(messageId, status, details);
 
-        return new Message(MessageType.DELIVERY_STATUS, "app", JsonUtil.toJson(dto));
+        return new Message(MessageType.DELIVERY_STATUS, "launcher", JsonUtil.toJson(dto));
     }
 
     public static Message onlineUsers(List<String> users) {
 
         OnlineUsersResponseDTO dto = new OnlineUsersResponseDTO(users);
 
-        return new Message(MessageType.ONLINE_USERS_RESPONSE, "app", JsonUtil.toJson(dto));
+        return new Message(MessageType.ONLINE_USERS_RESPONSE, "launcher", JsonUtil.toJson(dto));
     }
 
     public static Message disconnect() {
@@ -62,6 +62,6 @@ public final class ResponseFactory {
 
     private static Message build(MessageType type, boolean success, String text) {
         ResponseDTO dto = new ResponseDTO(success, text);
-        return new Message(type, "app", JsonUtil.toJson(dto));
+        return new Message(type, "launcher", JsonUtil.toJson(dto));
     }
 }

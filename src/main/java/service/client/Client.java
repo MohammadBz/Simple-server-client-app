@@ -1,8 +1,8 @@
 package service.client;
 
-import app.client.event.ClientEventHandler;
+import launcher.client.event.ClientEventHandler;
 import protocol.message.Message;
-import exception.ConnectionException;
+import exception.technical.ConnectionException;
 import lombok.extern.slf4j.Slf4j;
 import infrastructure.network.ConnectionManager;
 

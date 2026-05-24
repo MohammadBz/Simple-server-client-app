@@ -1,6 +1,6 @@
 package infrastructure.network;
 
-import exception.ConnectionException;
+import exception.technical.ConnectionException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -35,7 +35,7 @@ public class ConnectionManager {
         writer = null;
     }
 
-    public void connect(String host, int port) throws exception.ConnectionException {
+    public void connect(String host, int port) throws ConnectionException {
         try {
             this.socket = new Socket(host, port);
 
@@ -53,7 +53,7 @@ public class ConnectionManager {
     }
 
 
-    public void send(String json) throws exception.ConnectionException {
+    public void send(String json) throws ConnectionException {
         try {
             writer.println(json);
             log.debug("Sent message: {}", json);
@@ -64,7 +64,7 @@ public class ConnectionManager {
         }
     }
 
-    public String receive() throws exception.ConnectionException {
+    public String receive() throws ConnectionException {
         try {
             String json = reader.readLine();
 

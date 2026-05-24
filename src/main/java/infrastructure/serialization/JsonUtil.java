@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import exception.JsonDeserializationException;
-import exception.JsonSerializationException;
+import exception.technical.JsonDeserializationException;
+import exception.technical.JsonSerializationException;
 
 
 public class JsonUtil {
