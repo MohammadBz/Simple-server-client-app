@@ -15,11 +15,10 @@ import java.net.Socket;
 import java.net.SocketException;
 
 @Slf4j
-public class SocketServer implements ShutdownCapable {
+public class SocketServer extends AbstractServer {
 
     private final int port;
     private ServerSocket serverSocket;
-    private volatile boolean running = true;
 
     private final AuthService authService;
     private final HandlerFactory handlerFactory;
@@ -40,29 +39,9 @@ public class SocketServer implements ShutdownCapable {
         this.businessErrorResolver = new BusinessErrorResolver();
     }
 
-    public void start() {
-        try {
-            serverSocket = new ServerSocket(port);
-            log.info("Server started on port {}", port);
-
-            while (running) {
-                acceptClient();
-            }
-
-        } catch (IOException e) {
-            if (running) {
-                log.error("Server crashed", e);
-            }
-        } catch (Exception e) {
-            if (running) {
-                log.error("Unexpected error", e);
-            }
-        } finally {
-            stop();
-        }
-    }
-
-    private void acceptClient() {
+    @Override
+    protected void acceptClient() {
+        ClientHandler clientHandler = null;
         try {
             Socket socket = serverSocket.accept();
 
@@ -70,23 +49,24 @@ public class SocketServer implements ShutdownCapable {
 
             ConnectionManager connectionManager = new ConnectionManager(socket);
 
-            ClientHandler clientHandler = new ClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry, businessErrorResolver, systemErrorResolver);
+            clientHandler = new ClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry, businessErrorResolver, systemErrorResolver);
             connectionRegistry.register(clientHandler);
 
             Thread thread = new Thread(clientHandler);
             thread.start();
 
-        } catch (SocketException e) {
-            log.warn("Socket closed", e);
-        } catch (ConnectionException e) {
-            log.warn("Failed to initialize client connection: {}", e.getMessage());
-        } catch (IOException e) {
-            log.error("Error accepting client connection", e);
         } catch (Exception e) {
-            log.error("Unknown Error", e);
+            systemErrorResolver.resolve(e, clientHandler);
         }
     }
 
+    @Override
+    protected void beforeStart() throws IOException {
+        serverSocket = new ServerSocket(port);
+        log.info("Server started on port {}", port);
+    }
+
+    @Override
     public void stop() {
         if (!running) return;
         running = false;
