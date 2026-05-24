@@ -21,7 +21,7 @@ import protocol.message.factory.ResponseFactory;
 import java.util.UUID;
 
 @Slf4j
-public class ClientHandler implements Runnable {
+public class ClientHandler implements Runnable, ClientConnection {
 
     private final ConnectionManager connectionManager;
     private final HandlerFactory handlerFactory;
@@ -85,6 +85,7 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    @Override
     public synchronized void send(Message message) {
         try {
             connectionManager.send(message.toJson());
@@ -98,7 +99,8 @@ public class ClientHandler implements Runnable {
         connectionManager.close();
     }
 
-    public void deliver(ChatMessage chatMessage) throws MessageRoutingException {
+    @Override
+    public void deliver(ChatMessage chatMessage) {
         try {
             IncomingMessageDTO dto = new IncomingMessageDTO(chatMessage.getSender(), chatMessage.getContent(), chatMessage.getTimestamp());
 
@@ -112,14 +114,17 @@ public class ClientHandler implements Runnable {
         }
     }
 
+    @Override
     public Session getSession() {
         return session;
     }
 
+    @Override
     public String getClientId() {
         return clientId;
     }
 
+    @Override
     public void disconnect(String reason) {
         try {
             connectionManager.send(ResponseFactory.systemNotification(reason).toJson());
