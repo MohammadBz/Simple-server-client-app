@@ -5,7 +5,8 @@ import exception.technical.JsonDeserializationException;
 import exception.technical.JsonSerializationException;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.factory.ResponseFactory;
-import service.server.core.ClientHandler;
+import service.server.core.ClientConnection;
+
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +22,7 @@ public class SystemErrorResolver implements ErrorResolver {
     }
 
     @Override
-    public void resolve(Exception e, ClientHandler client) {
+    public void resolve(Exception e, ClientConnection client) {
         ErrorAction action = registry.get(e.getClass());
 
         if (action != null) {
@@ -34,12 +35,12 @@ public class SystemErrorResolver implements ErrorResolver {
 
     @FunctionalInterface
     public interface ErrorAction {
-        void execute(Exception e, ClientHandler client);
+        void execute(Exception e, ClientConnection client);
     }
 
     private class ConnectionErrorAction implements ErrorAction {
         @Override
-        public void execute(Exception e, ClientHandler client) {
+        public void execute(Exception e, ClientConnection client) {
             log.error("Network connection failure for client {}: {}", client.getClientId(), e.getMessage());
             client.stop();
         }
@@ -47,7 +48,7 @@ public class SystemErrorResolver implements ErrorResolver {
 
     private class JsonSerializationErrorAction implements ErrorAction {
         @Override
-        public void execute(Exception e, ClientHandler client) {
+        public void execute(Exception e, ClientConnection client) {
             log.error("Protocol Violation: Failed to serialize response for client {}", client.getClientId());
             client.disconnect("Protocol error: Server failed to format message.");
         }
@@ -55,7 +56,7 @@ public class SystemErrorResolver implements ErrorResolver {
 
     private class JsonDeserializationErrorAction implements ErrorAction {
         @Override
-        public void execute(Exception e, ClientHandler client) {
+        public void execute(Exception e, ClientConnection client) {
             log.warn("Invalid protocol format from client {}: {}", client.getClientId(), e.getMessage());
             client.send(ResponseFactory.systemNotification("Message format not recognized."));
         }

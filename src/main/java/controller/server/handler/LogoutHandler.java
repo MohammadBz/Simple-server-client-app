@@ -1,6 +1,6 @@
 package controller.server.handler;
 
-import service.server.core.ClientHandler;
+import service.server.core.ClientConnection ;
 import service.server.core.ServerManager;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
@@ -16,7 +16,7 @@ public class LogoutHandler implements MessageHandler {
     }
 
     @Override
-    public void handle(Message message, ClientHandler clientHandler) {
+    public void handle(Message message, ClientConnection Clientconnection) {
 
         String username = message.getSender();
 
@@ -26,6 +26,6 @@ public class LogoutHandler implements MessageHandler {
 
         Message response = ResponseFactory.logout();
 
-        clientHandler.send(response);
+        Clientconnection.send(response);
     }
 }

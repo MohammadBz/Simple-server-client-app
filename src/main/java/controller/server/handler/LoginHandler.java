@@ -5,7 +5,7 @@ import protocol.dto.auth.LoginRequestDTO;
 import exception.business.MessageProcessingException;
 import exception.validation.ValidationException;
 import service.server.business.auth.AuthService;
-import service.server.core.ClientHandler;
+import service.server.core.ClientConnection;
 import protocol.message.Message;
 import service.server.core.ServerManager;
 import service.common.validation.ValidationUtil;
@@ -26,7 +26,7 @@ public class LoginHandler implements MessageHandler {
     }
 
     @Override
-    public void handle(Message message, ClientHandler clientHandler) throws MessageProcessingException {
+    public void handle(Message message, ClientConnection Clientconnection) throws MessageProcessingException {
 
         LoginRequestDTO request = JsonUtil.fromJson((String) message.getPayload(), LoginRequestDTO.class);
 
@@ -36,11 +36,11 @@ public class LoginHandler implements MessageHandler {
 
         authService.login(request.getUsername(), request.getPassword());
 
-        clientHandler.getSession().authenticate(request.getUsername());
-        serverManager.registerSession(request.getUsername(), clientHandler);
+        Clientconnection.getSession().authenticate(request.getUsername());
+        serverManager.registerSession(request.getUsername(), Clientconnection);
         log.info("User '{}' logged in successfully", request.getUsername());
 
-        clientHandler.send(ResponseFactory.loginSuccess());
+        Clientconnection.send(ResponseFactory.loginSuccess());
     }
 
     private void validateLogin(LoginRequestDTO request) {

@@ -3,7 +3,7 @@ package controller.server.handler;
 import exception.business.UnauthorizedException;
 import protocol.message.Message;
 import protocol.message.factory.ResponseFactory;
-import service.server.core.ClientHandler;
+import service.server.core.ClientConnection;
 import service.server.core.ServerManager;
 
 import java.util.ArrayList;
@@ -18,14 +18,14 @@ public class OnlineUsersHandler implements MessageHandler {
     }
 
     @Override
-    public void handle(Message message, ClientHandler clientHandler) {
+    public void handle(Message message, ClientConnection Clientconnection) {
 
-        if (!clientHandler.getSession().isAuthenticated()) {
+        if (!Clientconnection.getSession().isAuthenticated()) {
             throw new UnauthorizedException("User not authenticated.");
         }
         List<String> users = new ArrayList<>(serverManager.getOnlineUsers());
-        users.remove(clientHandler.getSession().getUsername());
-        clientHandler.send(ResponseFactory.onlineUsers(users));
+        users.remove(Clientconnection.getSession().getUsername());
+        Clientconnection.send(ResponseFactory.onlineUsers(users));
 
     }
 }

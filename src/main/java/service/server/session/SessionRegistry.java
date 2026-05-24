@@ -1,7 +1,7 @@
 package service.server.session;
 
 import lombok.extern.slf4j.Slf4j;
-import service.server.core.ClientHandler;
+import service.server.core.ClientConnection;
 import protocol.response.ResponseMessages;
 
 import java.util.List;
@@ -10,9 +10,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class SessionRegistry {
 
-    private final ConcurrentHashMap<String, ClientHandler> activeSessions = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, ClientConnection> activeSessions = new ConcurrentHashMap<>();
 
-    public void register(String username, ClientHandler handler) {
+    public void register(String username, ClientConnection handler) {
         activeSessions.put(username, handler);
         log.info("Registered session for user '{}'", username);
     }
@@ -24,7 +24,7 @@ public class SessionRegistry {
         }
     }
 
-    public ClientHandler getClient(String username) {
+    public ClientConnection getClient(String username) {
         return activeSessions.get(username);
     }
 
@@ -40,7 +40,7 @@ public class SessionRegistry {
         if (username == null) {
             return false;
         }
-        ClientHandler handler = getClient(username);
+        ClientConnection handler = getClient(username);
         if (handler == null) {
             return false;
         }
@@ -50,7 +50,7 @@ public class SessionRegistry {
     }
 
     public void disconnectAll() {
-        for (ClientHandler handler : activeSessions.values()) {
+        for (ClientConnection handler : activeSessions.values()) {
             handler.disconnect(ResponseMessages.ServerShuttingDown);
         }
         activeSessions.clear();

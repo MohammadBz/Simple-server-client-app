@@ -1,6 +1,6 @@
 package controller.server.handler;
 
-import service.server.core.ClientHandler;
+import service.server.core.ClientConnection;
 import service.server.core.ServerManager;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
@@ -16,17 +16,17 @@ public class DisconnectHandler implements MessageHandler {
     }
 
     @Override
-    public void handle(Message message, ClientHandler clientHandler) {
+    public void handle(Message message, ClientConnection clientConnection) {
 
-        log.info("Client with id  {}  is disconnecting...", clientHandler.getClientId());
+        log.info("Client with id  {}  is disconnecting...", clientConnection.getClientId());
 
         Message response = ResponseFactory.disconnect();
 
         try {
-            clientHandler.send(response);
+            clientConnection.send(response);
         } catch (Exception ignored) {
             log.warn("Failed to send disconnect response");
         }
-        clientHandler.stop();
+        clientConnection.stop();
     }
 }

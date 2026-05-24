@@ -4,7 +4,7 @@ import exception.business.UnauthorizedException;
 import protocol.dto.chat.SendMessageRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
-import service.server.core.ClientHandler;
+import service.server.core.ClientConnection;
 import protocol.message.Message;
 import protocol.message.factory.ResponseFactory;
 import protocol.response.ResponseMessages;
@@ -23,23 +23,23 @@ public class SendMessageHandler implements MessageHandler {
     }
 
     @Override
-    public void handle(Message message, ClientHandler clientHandler) {
+    public void handle(Message message, ClientConnection Clientconnection) {
 
         SendMessageRequestDTO request = JsonUtil.fromJson(message.getPayload(), SendMessageRequestDTO.class);
 
-        if (!clientHandler.getSession().isAuthenticated()) {
+        if (!Clientconnection.getSession().isAuthenticated()) {
             throw new UnauthorizedException("User not authenticated.");
         }
 
         MessageValidator.validateMessage(request.getRecipient(), request.getContent());
 
-        ChatMessage chatMessage = new ChatMessage(clientHandler.getSession().getUsername(), request.getRecipient(), request.getContent());
+        ChatMessage chatMessage = new ChatMessage(Clientconnection.getSession().getUsername(), request.getRecipient(), request.getContent());
 
         ChatMessage deliveredMessage = serverManager.sendMessage(chatMessage);
 
         Message response = ResponseFactory.deliveryStatus(deliveredMessage.getId(), deliveredMessage.getStatus(), ResponseMessages.MESSAGE_SENT);
 
-        clientHandler.send(response);
+        Clientconnection.send(response);
 
 
     }

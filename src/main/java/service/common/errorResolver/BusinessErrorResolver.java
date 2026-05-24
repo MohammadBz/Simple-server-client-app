@@ -11,7 +11,7 @@ import exception.validation.SignupValidationException;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.factory.ResponseFactory;
 import protocol.response.ResponseMessages;
-import service.server.core.ClientHandler;
+import service.server.core.ClientConnection;
 
 import java.util.Map;
 
@@ -33,7 +33,7 @@ public class BusinessErrorResolver implements ErrorResolver {
     }
 
     @Override
-    public void resolve(Exception e, ClientHandler client) {
+    public void resolve(Exception e, ClientConnection client) {
         ErrorAction action = registry.get(e.getClass());
 
         if (action != null) {
@@ -45,12 +45,12 @@ public class BusinessErrorResolver implements ErrorResolver {
 
     @FunctionalInterface
     public interface ErrorAction {
-        void execute(Exception e, ClientHandler client);
+        void execute(Exception e, ClientConnection client);
     }
 
     public class LoginValidationExceptionErrorAction implements ErrorAction {
         @Override
-        public void execute(Exception e, ClientHandler client) {
+        public void execute(Exception e, ClientConnection client) {
             LoginValidationException ex = (LoginValidationException) e;
             log.warn("Invalid login input from {}: {}", ex.getUsername(), e.getMessage());
             client.send(ResponseFactory.loginFailure(ResponseMessages.EMPTY_FIELDS));
@@ -59,7 +59,7 @@ public class BusinessErrorResolver implements ErrorResolver {
 
     public class MessageRoutingExceptionErrorAction implements ErrorAction {
         @Override
-        public void execute(Exception e, ClientHandler client) {
+        public void execute(Exception e, ClientConnection client) {
             sendDeliveryFailure(client, e.getMessage());
             log.warn("Message routing failed: {}", e.getMessage());
         }
@@ -67,7 +67,7 @@ public class BusinessErrorResolver implements ErrorResolver {
 
     public class MessageValidationExceptionErrorAction implements ErrorAction {
         @Override
-        public void execute(Exception e, ClientHandler client) {
+        public void execute(Exception e, ClientConnection client) {
             sendDeliveryFailure(client, e.getMessage());
             log.warn("Invalid message: {}", e.getMessage());
         }
@@ -75,7 +75,7 @@ public class BusinessErrorResolver implements ErrorResolver {
 
     public class SignupValidationExceptionErrorAction implements ErrorAction {
         @Override
-        public void execute(Exception e, ClientHandler client) {
+        public void execute(Exception e, ClientConnection client) {
             SignupValidationException ex = (SignupValidationException) e;
             log.warn("Invalid signup input from {}: {}", ex.getUsername(), e.getMessage());
             client.send(ResponseFactory.signupFailure(ResponseMessages.EMPTY_FIELDS));
@@ -84,7 +84,7 @@ public class BusinessErrorResolver implements ErrorResolver {
 
     public class UnauthorizedExceptionErrorAction implements ErrorAction {
         @Override
-        public void execute(Exception e, ClientHandler client) {
+        public void execute(Exception e, ClientConnection client) {
             client.send(ResponseFactory.deliveryStatus(null, MessageStatus.FAILED, ResponseMessages.UNAUTHORIZED));
             log.warn("Unauthorized action attempted", e);
         }
@@ -92,7 +92,7 @@ public class BusinessErrorResolver implements ErrorResolver {
 
     public class UserDuplicateConflictExceptionErrorAction implements ErrorAction {
         @Override
-        public void execute(Exception e, ClientHandler client) {
+        public void execute(Exception e, ClientConnection client) {
             UserDuplicateConflictException ex = (UserDuplicateConflictException) e;
             log.warn("Signup failed - user '{}' already exists", ex.getUsername());
             client.send(ResponseFactory.signupFailure(ResponseMessages.USER_EXISTS));
@@ -101,14 +101,14 @@ public class BusinessErrorResolver implements ErrorResolver {
 
     public class InvalidCredentialsExceptionErrorAction implements ErrorAction {
         @Override
-        public void execute(Exception e, ClientHandler client) {
+        public void execute(Exception e, ClientConnection client) {
             InvalidCredentialsException ex = (InvalidCredentialsException) e;
             log.warn("Failed login attempt for user '{}' : {}", ex.getUsername(), e.getMessage());
             client.send(ResponseFactory.loginFailure(ResponseMessages.LOGIN_FAILED));
         }
     }
 
-    private void sendDeliveryFailure(ClientHandler client, String message) {
+    private void sendDeliveryFailure(ClientConnection client, String message) {
         client.send(ResponseFactory.deliveryStatus(null, MessageStatus.FAILED, message));
     }
 

@@ -1,6 +1,6 @@
 package service.server.session;
 
-import service.server.core.ClientHandler;
+import service.server.core.ClientConnection;
 import lombok.extern.slf4j.Slf4j;
 import protocol.response.ResponseMessages;
 
@@ -10,14 +10,14 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class ConnectionRegistry {
 
-    private final Set<ClientHandler> activeConnections = ConcurrentHashMap.newKeySet();
+    private final Set<ClientConnection> activeConnections = ConcurrentHashMap.newKeySet();
 
-    public void register(ClientHandler handler) {
+    public void register(ClientConnection handler) {
         activeConnections.add(handler);
         log.info("Connection registered. client id: {}", handler.getClientId());
     }
 
-    public void unregister(ClientHandler handler) {
+    public void unregister(ClientConnection handler) {
         if (activeConnections.contains(handler)) {
             activeConnections.remove(handler);
             log.info("Connection removed. client id: {}", handler.getClientId());
@@ -25,7 +25,7 @@ public class ConnectionRegistry {
     }
 
     public void disconnectAll() {
-        for (ClientHandler handler : activeConnections) {
+        for (ClientConnection handler : activeConnections) {
             handler.disconnect(ResponseMessages.ServerShuttingDown);
         }
         activeConnections.clear();

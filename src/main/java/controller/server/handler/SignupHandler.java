@@ -9,7 +9,7 @@ import protocol.message.Message;
 import protocol.dto.auth.SignupRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import service.server.business.auth.AuthService;
-import service.server.core.ClientHandler;
+import service.server.core.ClientConnection;
 import service.common.validation.ValidationUtil;
 import protocol.message.factory.ResponseFactory;
 
@@ -23,7 +23,7 @@ public class SignupHandler implements MessageHandler {
     }
 
     @Override
-    public void handle(Message message, ClientHandler clientHandler) throws MessageProcessingException {
+    public void handle(Message message, ClientConnection Clientconnection) throws MessageProcessingException {
 
         SignupRequestDTO request = JsonUtil.fromJson((String) message.getPayload(), SignupRequestDTO.class);
 
@@ -35,11 +35,11 @@ public class SignupHandler implements MessageHandler {
         }
         authService.signup(request.getUsername(), request.getPassword());
 
-        clientHandler.getSession().authenticate(request.getUsername());
+        Clientconnection.getSession().authenticate(request.getUsername());
 
         log.info("User '{}' signed up successfully", request.getUsername());
 
-        clientHandler.send(ResponseFactory.signupSuccess());
+        Clientconnection.send(ResponseFactory.signupSuccess());
 
     }
 

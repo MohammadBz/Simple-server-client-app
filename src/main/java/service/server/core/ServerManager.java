@@ -20,8 +20,8 @@ public class ServerManager implements AdminOperations {
         this.routingService = new RoutingService(sessionRegistry);
     }
 
-    public void registerSession(String username, ClientHandler handler) {
-        sessionRegistry.register(username, handler);
+    public void registerSession(String username, ClientConnection Clientconnection) {
+        sessionRegistry.register(username, Clientconnection);
     }
 
     public void unregisterSession(String username) {

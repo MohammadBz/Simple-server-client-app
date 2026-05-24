@@ -4,7 +4,7 @@ import exception.business.MessageRoutingException;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
 import domain.chat.MessageStatus;
-import service.server.core.ClientHandler;
+import service.server.core.ClientConnection;
 import service.server.session.SessionRegistry;
 
 @Slf4j
@@ -18,7 +18,7 @@ public class RoutingService {
 
     public ChatMessage route(ChatMessage chatMessage) throws MessageRoutingException {
 
-        ClientHandler recipientHandler = sessionRegistry.getClient(chatMessage.getRecipient());
+        ClientConnection recipientHandler = sessionRegistry.getClient(chatMessage.getRecipient());
 
         if (recipientHandler == null) {
             chatMessage.updateStatus(MessageStatus.FAILED);
