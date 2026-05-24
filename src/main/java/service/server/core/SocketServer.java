@@ -15,7 +15,7 @@ import java.net.Socket;
 import java.net.SocketException;
 
 @Slf4j
-public class Server implements ShutdownCapable {
+public class SocketServer implements ShutdownCapable {
 
     private final int port;
     private ServerSocket serverSocket;
@@ -29,7 +29,7 @@ public class Server implements ShutdownCapable {
     private final SystemErrorResolver systemErrorResolver;
     private final BusinessErrorResolver businessErrorResolver;
 
-    public Server(int port, ServerManager serverManager) {
+    public SocketServer(int port, ServerManager serverManager) {
         this.port = port;
         this.authService = new AuthService();
         this.connectionManager = new ConnectionManager();
