@@ -62,6 +62,22 @@ public class SystemErrorResolver implements ErrorResolver {
         }
     }
 
+    private class SocketExceptionErrorAction implements ErrorAction {
+        @Override
+        public void execute(Exception e, ClientConnection client) {
+            log.warn("Socket closed unexpectedly for client: {}", e.getMessage());
+            client.stop();
+        }
+    }
+
+    private class IOExceptionErrorAction implements ErrorAction {
+        @Override
+        public void execute(Exception e, ClientConnection client) {
+            log.error("IO Error during communication: {}", e.getMessage());
+            client.disconnect("Server infrastructure error.");
+        }
+    }
+
     private void register(Class<? extends Exception> type, SystemErrorResolver.ErrorAction action) {
         registry.put(type, action);
     }
