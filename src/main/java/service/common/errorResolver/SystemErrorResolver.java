@@ -41,7 +41,7 @@ public class SystemErrorResolver implements ErrorResolver {
         @Override
         public void execute(Exception e, ClientHandler client) {
             log.error("Network connection failure for client {}: {}", client.getClientId(), e.getMessage());
-            client.close();
+            client.stop();
         }
     }
 

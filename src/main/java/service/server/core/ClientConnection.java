@@ -9,6 +9,8 @@ public interface ClientConnection {
 
     public void disconnect(String reason);
 
+    public void stop();
+
     public Session getSession();
 
     public String getClientId();
