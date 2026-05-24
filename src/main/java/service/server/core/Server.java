@@ -6,6 +6,8 @@ import exception.technical.ConnectionException;
 import controller.server.handler.HandlerFactory;
 import lombok.extern.slf4j.Slf4j;
 import infrastructure.network.ConnectionManager;
+import service.common.errorResolver.BusinessErrorResolver;
+import service.common.errorResolver.SystemErrorResolver;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -24,6 +26,8 @@ public class Server implements ShutdownCapable {
     private final ConnectionManager connectionManager;
     private final ServerManager serverManager;
     private final ConnectionRegistry connectionRegistry;
+    private final SystemErrorResolver systemErrorResolver;
+    private final BusinessErrorResolver businessErrorResolver;
 
     public Server(int port, ServerManager serverManager) {
         this.port = port;
@@ -32,6 +36,8 @@ public class Server implements ShutdownCapable {
         this.serverManager = serverManager;
         this.handlerFactory = new HandlerFactory(authService, serverManager);
         this.connectionRegistry = new ConnectionRegistry();
+        this.systemErrorResolver = new SystemErrorResolver();
+        this.businessErrorResolver = new BusinessErrorResolver();
     }
 
     public void start() {
@@ -64,7 +70,7 @@ public class Server implements ShutdownCapable {
 
             ConnectionManager connectionManager = new ConnectionManager(socket);
 
-            ClientHandler clientHandler = new ClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry);
+            ClientHandler clientHandler = new ClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry, businessErrorResolver, systemErrorResolver);
             connectionRegistry.register(clientHandler);
 
             Thread thread = new Thread(clientHandler);
