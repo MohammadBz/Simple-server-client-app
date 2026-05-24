@@ -1,5 +1,7 @@
 package launcher.server;
 
+import service.server.core.AbstractServer;
+import service.server.core.Server;
 import service.server.core.SocketServer;
 import lombok.extern.slf4j.Slf4j;
 import ui.admin.AdminConsole;
@@ -12,7 +14,7 @@ public class ServerMain {
     public static void main(String[] args) {
         ServerManager serverManager = new ServerManager();
 
-        SocketServer server = new SocketServer(12500, serverManager);
+        AbstractServer server = new SocketServer(12500, serverManager);
         serverManager.setShutdownCapable(server);
         AdminService adminService = new AdminService(serverManager);
         AdminController controller = new AdminController(adminService);
