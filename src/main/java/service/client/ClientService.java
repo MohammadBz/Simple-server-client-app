@@ -8,8 +8,9 @@ import exception.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
 import protocol.message.MessageType;
-import service.common.validation.UserValidator;
 import protocol.message.factory.RequestFactory;
+import protocol.message.factory.RequestFactoryImpl;
+import service.common.validation.UserValidator;
 
 
 @Slf4j
@@ -18,12 +19,12 @@ public class ClientService {
     private final ChatClient client;
     private final ClientSession session;
     private String pendingLoginUsername;
-    private final Serializer serializer;
+    private final RequestFactory requestFactory;
 
-    public ClientService(ChatClient client, ClientSession session, Serializer serializer) {
+    public ClientService(ChatClient client, ClientSession session, RequestFactory requestFactory) {
         this.client = client;
         this.session = session;
-        this.serializer = serializer;
+        this.requestFactory = requestFactory;
 
     }
 
@@ -31,9 +32,8 @@ public class ClientService {
 
         UserValidator.validateCredentials(username, password);
 
-        LoginRequestDTO dto = new LoginRequestDTO(username, password);
+        Message message = requestFactory.login(username, password);
 
-        Message message = new Message(MessageType.LOGIN_REQUEST, username, serializer.serialize(dto));
         pendingLoginUsername = username;
         log.info("Sending login request for '{}'", username);
         client.send(message);
@@ -45,7 +45,8 @@ public class ClientService {
 
         SignupRequestDTO dto = new SignupRequestDTO(username, password);
 
-        Message message = new Message(MessageType.SIGNUP_REQUEST, username, serializer.serialize(dto));
+        Message message = requestFactory.signup(username, password);
+
         log.info("Sending signup request for '{}'", username);
         client.send(message);
     }
@@ -54,7 +55,7 @@ public class ClientService {
 
         log.info("Sending message to '{}'", receiver);
 
-        Message message = RequestFactory.sendMessage(session.getUsername(), receiver, content);
+        Message message = requestFactory.sendMessage(session.getUsername(), receiver, content);
 
         client.send(message);
     }
@@ -63,14 +64,14 @@ public class ClientService {
 
         log.info("Requesting online users");
 
-        Message request = RequestFactory.onlineUsersRequest(session.getUsername());
+        Message request = requestFactory.onlineUsersRequest(session.getUsername());
 
         client.send(request);
     }
 
     public void disconnect() throws ConnectionException {
         log.info("Sending Disconnect request");
-        Message request = RequestFactory.disconnectRequest();
+        Message request = requestFactory.disconnectRequest();
         client.send(request);
     }
 
@@ -78,7 +79,7 @@ public class ClientService {
 
         log.info("Sending logout request for user {}", session.getUsername());
 
-        Message request = RequestFactory.logoutRequest(session.getUsername());
+        Message request = requestFactory.logoutRequest(session.getUsername());
 
         client.send(request);
     }
