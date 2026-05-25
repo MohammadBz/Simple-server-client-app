@@ -4,7 +4,6 @@ import infrastructure.serialization.JacksonSerializer;
 import infrastructure.serialization.Serializer;
 import protocol.message.factory.RequestFactory;
 import protocol.message.factory.RequestFactoryImpl;
-import protocol.message.factory.ResponseFactory;
 import service.client.AbstractClient;
 import service.client.SocketChatClient;
 import service.client.ClientService;

@@ -5,12 +5,13 @@ import infrastructure.serialization.Serializer;
 import protocol.dto.auth.LoginRequestDTO;
 import exception.business.MessageProcessingException;
 import exception.validation.ValidationException;
+import protocol.message.factory.RequestFactory;
+import protocol.message.factory.ResponseFactory;
 import service.server.business.auth.AuthService;
 import service.server.core.ClientConnection;
 import protocol.message.Message;
 import service.common.validation.UserValidator;
 import lombok.extern.slf4j.Slf4j;
-import protocol.message.factory.ResponseFactory;
 import service.server.core.SessionOperations;
 
 
@@ -20,11 +21,13 @@ public class LoginHandler implements MessageHandler {
     private final AuthService authService;
     private final SessionOperations sessionOperations;
     private final Serializer serializer;
+    private final ResponseFactory responseFactory;
 
-    public LoginHandler(AuthService authService, SessionOperations serverManager, Serializer serializer) {
+    public LoginHandler(AuthService authService, SessionOperations serverManager, Serializer serializer, ResponseFactory responseFactory) {
         this.authService = authService;
         this.sessionOperations = serverManager;
         this.serializer = serializer;
+        this.responseFactory = responseFactory;
     }
 
     @Override
@@ -42,7 +45,7 @@ public class LoginHandler implements MessageHandler {
         sessionOperations.registerSession(request.getUsername(), Clientconnection);
         log.info("User '{}' logged in successfully", request.getUsername());
 
-        Clientconnection.send(ResponseFactory.loginSuccess());
+        Clientconnection.send(responseFactory.loginSuccess());
     }
 
     private void validateLogin(LoginRequestDTO request) {

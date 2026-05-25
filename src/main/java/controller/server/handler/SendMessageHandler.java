@@ -5,9 +5,9 @@ import infrastructure.serialization.Serializer;
 import protocol.dto.chat.SendMessageRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
+import protocol.message.factory.ResponseFactory;
 import service.server.core.ClientConnection;
 import protocol.message.Message;
-import protocol.message.factory.ResponseFactory;
 import protocol.response.ResponseMessages;
 import service.server.core.MessageOperations;
 import service.common.validation.MessageValidator;
@@ -18,10 +18,12 @@ public class SendMessageHandler implements MessageHandler {
 
     private final MessageOperations messageOperations;
     private final Serializer serializer;
+    private final ResponseFactory responseFactory;
 
-    public SendMessageHandler(MessageOperations serverManager, Serializer serializer) {
+    public SendMessageHandler(MessageOperations serverManager, Serializer serializer, ResponseFactory responseFactory) {
         this.messageOperations = serverManager;
         this.serializer = serializer;
+        this.responseFactory = responseFactory;
     }
 
     @Override
@@ -39,7 +41,7 @@ public class SendMessageHandler implements MessageHandler {
 
         ChatMessage deliveredMessage = messageOperations.sendMessage(chatMessage);
 
-        Message response = ResponseFactory.deliveryStatus(deliveredMessage.getId(), deliveredMessage.getStatus(), ResponseMessages.MESSAGE_SENT);
+        Message response = responseFactory.deliveryStatus(deliveredMessage.getId(), deliveredMessage.getStatus(), ResponseMessages.MESSAGE_SENT);
 
         Clientconnection.send(response);
 

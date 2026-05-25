@@ -21,8 +21,10 @@ import java.util.HashMap;
 @Slf4j
 public class ServerBusinessErrorResolver implements ServerErrorResolver {
     private final Map<Class<? extends Exception>, ErrorAction> registry = new HashMap<>();
+    private final ResponseFactory responseFactory;
 
-    public ServerBusinessErrorResolver() {
+    public ServerBusinessErrorResolver(ResponseFactory responseFactory) {
+        this.responseFactory = responseFactory;
         register(LoginValidationException.class, new LoginValidationExceptionErrorAction());
         register(SignupValidationException.class, new SignupValidationExceptionErrorAction());
         register(InvalidCredentialsException.class, new InvalidCredentialsExceptionErrorAction());
@@ -53,7 +55,7 @@ public class ServerBusinessErrorResolver implements ServerErrorResolver {
         public void execute(Exception e, ClientConnection client) {
             LoginValidationException ex = (LoginValidationException) e;
             log.warn("Invalid login input from {}: {}", ex.getUsername(), e.getMessage());
-            client.send(ResponseFactory.loginFailure(ResponseMessages.EMPTY_FIELDS));
+            client.send(responseFactory.loginFailure(ResponseMessages.EMPTY_FIELDS));
         }
     }
 
@@ -78,14 +80,14 @@ public class ServerBusinessErrorResolver implements ServerErrorResolver {
         public void execute(Exception e, ClientConnection client) {
             SignupValidationException ex = (SignupValidationException) e;
             log.warn("Invalid signup input from {}: {}", ex.getUsername(), e.getMessage());
-            client.send(ResponseFactory.signupFailure(ResponseMessages.EMPTY_FIELDS));
+            client.send(responseFactory.signupFailure(ResponseMessages.EMPTY_FIELDS));
         }
     }
 
     public class UnauthorizedExceptionErrorAction implements ErrorAction {
         @Override
         public void execute(Exception e, ClientConnection client) {
-            client.send(ResponseFactory.deliveryStatus(null, MessageStatus.FAILED, ResponseMessages.UNAUTHORIZED));
+            client.send(responseFactory.deliveryStatus(null, MessageStatus.FAILED, ResponseMessages.UNAUTHORIZED));
             log.warn("Unauthorized action attempted", e);
         }
     }
@@ -95,7 +97,7 @@ public class ServerBusinessErrorResolver implements ServerErrorResolver {
         public void execute(Exception e, ClientConnection client) {
             UserDuplicateConflictException ex = (UserDuplicateConflictException) e;
             log.warn("Signup failed - user '{}' already exists", ex.getUsername());
-            client.send(ResponseFactory.signupFailure(ResponseMessages.USER_EXISTS));
+            client.send(responseFactory.signupFailure(ResponseMessages.USER_EXISTS));
         }
     }
 
@@ -104,12 +106,12 @@ public class ServerBusinessErrorResolver implements ServerErrorResolver {
         public void execute(Exception e, ClientConnection client) {
             InvalidCredentialsException ex = (InvalidCredentialsException) e;
             log.warn("Failed login attempt for user '{}' : {}", ex.getUsername(), e.getMessage());
-            client.send(ResponseFactory.loginFailure(ResponseMessages.LOGIN_FAILED));
+            client.send(responseFactory.loginFailure(ResponseMessages.LOGIN_FAILED));
         }
     }
 
     private void sendDeliveryFailure(ClientConnection client, String message) {
-        client.send(ResponseFactory.deliveryStatus(null, MessageStatus.FAILED, message));
+        client.send(responseFactory.deliveryStatus(null, MessageStatus.FAILED, message));
     }
 
     private void register(Class<? extends Exception> type, ErrorAction action) {

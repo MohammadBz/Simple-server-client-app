@@ -4,6 +4,8 @@ import infrastructure.network.ConnectionManager;
 import infrastructure.network.SocketConnectionManager;
 import infrastructure.serialization.JacksonSerializer;
 import infrastructure.serialization.Serializer;
+import protocol.message.factory.ResponseFactory;
+import protocol.message.factory.ResponseFactoryImpl;
 import service.server.business.auth.AuthServiceImpl;
 import service.server.errorResolver.ServerErrorResolver;
 import service.server.session.ConnectionRegistry;
@@ -31,6 +33,7 @@ public class SocketServer extends AbstractServer {
     private final ServerErrorResolver systemErrorResolver;
     private final ServerErrorResolver serverBusinessErrorResolver;
     private final Serializer serializer;
+    private final ResponseFactory responseFactory;
 
     public SocketServer(int port, CoreServerManager serverManager) {
         this.port = port;
@@ -38,10 +41,11 @@ public class SocketServer extends AbstractServer {
         this.connectionManager = new SocketConnectionManager();
         this.serverManager = serverManager;
         this.serializer = new JacksonSerializer();
-        this.handlerFactory = new HandlerFactory(authService, serverManager, serializer);
+        this.responseFactory = new ResponseFactoryImpl(serializer);
+        this.handlerFactory = new HandlerFactory(authService, serverManager, serializer, responseFactory);
         this.connectionRegistry = new ConnectionRegistryImpl();
-        this.systemErrorResolver = new ServerSystemErrorResolver();
-        this.serverBusinessErrorResolver = new ServerBusinessErrorResolver();
+        this.systemErrorResolver = new ServerSystemErrorResolver(responseFactory);
+        this.serverBusinessErrorResolver = new ServerBusinessErrorResolver(responseFactory);
 
     }
 
@@ -55,7 +59,7 @@ public class SocketServer extends AbstractServer {
 
             ConnectionManager connectionManager = new SocketConnectionManager(socket);
 
-            clientHandler = new ClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry, serverBusinessErrorResolver, systemErrorResolver, serializer);
+            clientHandler = new ClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry, serverBusinessErrorResolver, systemErrorResolver, serializer, responseFactory);
             connectionRegistry.register(clientHandler);
 
             Thread thread = new Thread(clientHandler);

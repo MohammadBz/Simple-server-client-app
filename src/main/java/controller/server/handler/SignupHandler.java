@@ -7,20 +7,23 @@ import infrastructure.serialization.Serializer;
 import protocol.message.Message;
 import protocol.dto.auth.SignupRequestDTO;
 import lombok.extern.slf4j.Slf4j;
+import protocol.message.factory.ResponseFactory;
 import service.server.business.auth.AuthService;
 import service.server.core.ClientConnection;
 import service.common.validation.UserValidator;
-import protocol.message.factory.ResponseFactory;
+
 
 @Slf4j
 public class SignupHandler implements MessageHandler {
 
     private final AuthService authService;
     private final Serializer serializer;
+    private final ResponseFactory responseFactory;
 
-    public SignupHandler(AuthService authService, Serializer serializer) {
+    public SignupHandler(AuthService authService, Serializer serializer, ResponseFactory responseFactory) {
         this.authService = authService;
         this.serializer = serializer;
+        this.responseFactory = responseFactory;
     }
 
     @Override
@@ -40,7 +43,7 @@ public class SignupHandler implements MessageHandler {
 
         log.info("User '{}' signed up successfully", request.getUsername());
 
-        Clientconnection.send(ResponseFactory.signupSuccess());
+        Clientconnection.send(responseFactory.signupSuccess());
 
     }
 

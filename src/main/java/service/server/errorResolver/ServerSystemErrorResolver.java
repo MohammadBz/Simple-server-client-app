@@ -15,8 +15,10 @@ import java.util.Map;
 @Slf4j
 public class ServerSystemErrorResolver implements ServerErrorResolver {
     private final Map<Class<? extends Exception>, ErrorAction> registry = new HashMap<>();
+    private final ResponseFactory responseFactory;
 
-    public ServerSystemErrorResolver() {
+    public ServerSystemErrorResolver(ResponseFactory responseFactory) {
+        this.responseFactory = responseFactory;
         register(ConnectionException.class, new ConnectionErrorAction());
         register(JsonSerializationException.class, new JsonSerializationErrorAction());
         register(JsonDeserializationException.class, new JsonDeserializationErrorAction());
@@ -75,7 +77,7 @@ public class ServerSystemErrorResolver implements ServerErrorResolver {
                 return;
             }
             log.warn("Invalid protocol format from client {}: {}", client.getClientId(), e.getMessage());
-            client.send(ResponseFactory.systemNotification("Message format not recognized."));
+            client.send(responseFactory.systemNotification("Message format not recognized."));
         }
     }
 

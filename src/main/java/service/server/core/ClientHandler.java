@@ -3,6 +3,7 @@ package service.server.core;
 import exception.base.BusinessException;
 import exception.business.MessageRoutingException;
 import infrastructure.network.ConnectionManager;
+import protocol.message.factory.ResponseFactory;
 import service.server.errorResolver.ServerErrorResolver;
 import exception.technical.ConnectionException;
 import service.server.session.ConnectionRegistry;
@@ -15,7 +16,6 @@ import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
 import protocol.dto.chat.IncomingMessageDTO;
 import infrastructure.serialization.Serializer;
-import protocol.message.factory.ResponseFactory;
 
 import java.util.UUID;
 
@@ -28,6 +28,7 @@ public class ClientHandler implements Runnable, ClientConnection {
     private final ConnectionRegistry connectionRegistry;
     private final ServerErrorResolver serverBusinessErrorResolver;
     private final ServerErrorResolver systemErrorResolver;
+    private final ResponseFactory responseFactory;
     CoreServerManager serverManager;
     private final Session session;
     private volatile boolean running = true;
@@ -37,7 +38,7 @@ public class ClientHandler implements Runnable, ClientConnection {
     private final String clientId = UUID.randomUUID().toString();
 
     public ClientHandler(ConnectionManager connectionManager, HandlerFactory handlerFactory, CoreServerManager serverManager, ConnectionRegistry connectionRegistry, ServerErrorResolver serverBusinessErrorResolver,
-                         ServerErrorResolver systemErrorResolver, Serializer serializer) {
+                         ServerErrorResolver systemErrorResolver, Serializer serializer, ResponseFactory responseFactory) {
         this.connectionManager = connectionManager;
         this.handlerFactory = handlerFactory;
         this.serverManager = serverManager;
@@ -45,6 +46,7 @@ public class ClientHandler implements Runnable, ClientConnection {
         this.serverBusinessErrorResolver = serverBusinessErrorResolver;
         this.systemErrorResolver = systemErrorResolver;
         this.serializer = serializer;
+        this.responseFactory = responseFactory;
         this.session = new Session();
     }
 
@@ -74,7 +76,7 @@ public class ClientHandler implements Runnable, ClientConnection {
             MessageHandler handler = handlerFactory.getHandler(message.getType());
             if (handler == null) {
                 log.warn("No handler found for type: {} from: {}", message.getType(), clientId);
-                this.send(ResponseFactory.systemNotification("Unsupported message type"));
+                this.send(responseFactory.systemNotification("Unsupported message type"));
                 return;
             }
             handler.handle(message, this);
@@ -128,7 +130,7 @@ public class ClientHandler implements Runnable, ClientConnection {
     @Override
     public void disconnect(String reason) {
         try {
-            connectionManager.send(serializer.serialize(ResponseFactory.systemNotification(reason)));
+            connectionManager.send(serializer.serialize(responseFactory.systemNotification(reason)));
         } catch (Exception e) {
             log.warn("Failed to notify client before disconnect");
         } finally {

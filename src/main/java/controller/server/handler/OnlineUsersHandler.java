@@ -12,9 +12,11 @@ import java.util.List;
 public class OnlineUsersHandler implements MessageHandler {
 
     private final AdminOperations adminOperations;
+    private final ResponseFactory responseFactory;
 
-    public OnlineUsersHandler(AdminOperations serverManager) {
+    public OnlineUsersHandler(AdminOperations serverManager, ResponseFactory responseFactory) {
         this.adminOperations = serverManager;
+        this.responseFactory = responseFactory;
     }
 
     @Override
@@ -25,7 +27,7 @@ public class OnlineUsersHandler implements MessageHandler {
         }
         List<String> users = new ArrayList<>(adminOperations.getOnlineUsers());
         users.remove(Clientconnection.getSession().getUsername());
-        Clientconnection.send(ResponseFactory.onlineUsers(users));
+        Clientconnection.send(responseFactory.onlineUsers(users));
 
     }
 }
