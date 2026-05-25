@@ -9,7 +9,6 @@ import protocol.response.ResponseDTO;
 import protocol.dto.chat.IncomingMessageDTO;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
-import infrastructure.serialization.JacksonSerializer;
 import launcher.client.event.ClientEventHandler;
 
 

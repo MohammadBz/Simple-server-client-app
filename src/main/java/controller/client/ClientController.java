@@ -4,7 +4,6 @@ import service.client.ClientService;
 import service.client.ClientSession;
 import launcher.client.event.ClientEventHandler;
 import domain.chat.MessageStatus;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import protocol.dto.chat.DeliveryStatusDTO;
 import protocol.dto.chat.IncomingMessageDTO;
@@ -16,7 +15,6 @@ import ui.client.ConsoleUI;
 import static java.lang.System.exit;
 
 @Slf4j
-@RequiredArgsConstructor
 public class ClientController implements ClientEventHandler {
 
     private final ClientService clientService;
@@ -25,6 +23,12 @@ public class ClientController implements ClientEventHandler {
 
     private volatile boolean running = true;
     private volatile boolean waitingForServer = false;
+
+    public ClientController(ClientService clientService, ClientSession session, ConsoleUI ui) {
+        this.clientService = clientService;
+        this.session = session;
+        this.ui = ui;
+    }
 
     public boolean isRunning() {
         return running;

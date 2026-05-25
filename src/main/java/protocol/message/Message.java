@@ -1,6 +1,5 @@
 package protocol.message;
 
-import infrastructure.serialization.JacksonSerializer;
 
 public class Message {
 

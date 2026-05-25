@@ -1,91 +1,20 @@
 package service.client;
 
-import infrastructure.serialization.Serializer;
-import protocol.dto.auth.LoginRequestDTO;
-import protocol.dto.auth.SignupRequestDTO;
 import exception.technical.ConnectionException;
 import exception.validation.ValidationException;
-import lombok.extern.slf4j.Slf4j;
-import protocol.message.Message;
-import protocol.message.MessageType;
-import protocol.message.factory.RequestFactory;
-import protocol.message.factory.RequestFactoryImpl;
-import service.common.validation.UserValidator;
 
+public interface ClientService {
+    void login(String username, String password) throws ValidationException, ConnectionException;
 
-@Slf4j
-public class ClientService {
+    void signup(String username, String password) throws ValidationException, ConnectionException;
 
-    private final ChatClient client;
-    private final ClientSession session;
-    private String pendingLoginUsername;
-    private final RequestFactory requestFactory;
+    void sendMessage(String receiver, String content) throws ConnectionException;
 
-    public ClientService(ChatClient client, ClientSession session, RequestFactory requestFactory) {
-        this.client = client;
-        this.session = session;
-        this.requestFactory = requestFactory;
+    void requestOnlineUsers() throws ConnectionException;
 
-    }
+    void logout() throws ConnectionException;
 
-    public void login(String username, String password) throws ValidationException, ConnectionException {
+    void disconnect() throws ConnectionException;
 
-        UserValidator.validateCredentials(username, password);
-
-        Message message = requestFactory.login(username, password);
-
-        pendingLoginUsername = username;
-        log.info("Sending login request for '{}'", username);
-        client.send(message);
-    }
-
-    public void signup(String username, String password) throws ValidationException, ConnectionException {
-
-        UserValidator.validateCredentials(username, password);
-
-        SignupRequestDTO dto = new SignupRequestDTO(username, password);
-
-        Message message = requestFactory.signup(username, password);
-
-        log.info("Sending signup request for '{}'", username);
-        client.send(message);
-    }
-
-    public void sendMessage(String receiver, String content) throws ConnectionException {
-
-        log.info("Sending message to '{}'", receiver);
-
-        Message message = requestFactory.sendMessage(session.getUsername(), receiver, content);
-
-        client.send(message);
-    }
-
-    public void requestOnlineUsers() throws ConnectionException {
-
-        log.info("Requesting online users");
-
-        Message request = requestFactory.onlineUsersRequest(session.getUsername());
-
-        client.send(request);
-    }
-
-    public void disconnect() throws ConnectionException {
-        log.info("Sending Disconnect request");
-        Message request = requestFactory.disconnectRequest();
-        client.send(request);
-    }
-
-    public void logout() throws ConnectionException {
-
-        log.info("Sending logout request for user {}", session.getUsername());
-
-        Message request = requestFactory.logoutRequest(session.getUsername());
-
-        client.send(request);
-    }
-
-    public void confirmLogin() {
-        session.authenticate(pendingLoginUsername);
-        log.info("Client session authenticated for '{}'", pendingLoginUsername);
-    }
+    void confirmLogin();
 }

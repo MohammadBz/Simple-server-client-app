@@ -4,10 +4,7 @@ import infrastructure.serialization.JacksonSerializer;
 import infrastructure.serialization.Serializer;
 import protocol.message.factory.RequestFactory;
 import protocol.message.factory.RequestFactoryImpl;
-import service.client.AbstractClient;
-import service.client.SocketChatClient;
-import service.client.ClientService;
-import service.client.ClientSession;
+import service.client.*;
 import controller.client.ClientController;
 import ui.client.ConsoleUI;
 import exception.technical.ConnectionException;
@@ -29,7 +26,7 @@ public class ClientApplication {
         this.serializer = new JacksonSerializer();
         this.client = new SocketChatClient(null, serializer);
         this.requestFactory = new RequestFactoryImpl(serializer);
-        this.service = new ClientService(client, session, requestFactory);
+        this.service = new ClientServiceImpl(client, session, requestFactory);
 
         this.controller = new ClientController(service, session, ui);
 
