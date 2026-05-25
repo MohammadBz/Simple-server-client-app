@@ -2,6 +2,7 @@ package service.server.core;
 
 import service.server.business.admin.AdminOperations;
 import service.server.business.messageRoute.RoutingService;
+import service.server.business.messageRoute.RoutingServiceImpl;
 import service.server.session.SessionRegistry;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
@@ -17,7 +18,7 @@ public class CoreServerManager implements AdminOperations, MessageOperations, Se
 
     public CoreServerManager() {
         this.sessionRegistry = new SessionRegistry();
-        this.routingService = new RoutingService(sessionRegistry);
+        this.routingService = new RoutingServiceImpl(sessionRegistry);
     }
 
     @Override
