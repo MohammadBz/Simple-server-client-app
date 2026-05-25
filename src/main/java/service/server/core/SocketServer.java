@@ -3,6 +3,7 @@ package service.server.core;
 import service.server.business.auth.AuthServiceImpl;
 import service.server.errorResolver.ServerErrorResolver;
 import service.server.session.ConnectionRegistry;
+import service.server.session.ConnectionRegistryImpl;
 import controller.server.handler.HandlerFactory;
 import lombok.extern.slf4j.Slf4j;
 import infrastructure.network.ConnectionManager;
@@ -33,7 +34,7 @@ public class SocketServer extends AbstractServer {
         this.connectionManager = new ConnectionManager();
         this.serverManager = serverManager;
         this.handlerFactory = new HandlerFactory(authService, serverManager);
-        this.connectionRegistry = new ConnectionRegistry();
+        this.connectionRegistry = new ConnectionRegistryImpl();
         this.systemErrorResolver = new ServerSystemErrorResolver();
         this.serverBusinessErrorResolver = new ServerBusinessErrorResolver();
     }
