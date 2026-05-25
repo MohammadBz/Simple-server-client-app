@@ -9,7 +9,7 @@ import protocol.dto.auth.SignupRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import service.server.business.auth.AuthService;
 import service.server.core.ClientConnection;
-import service.common.validation.ValidationUtil;
+import service.common.validation.UserValidator;
 import protocol.message.factory.ResponseFactory;
 
 @Slf4j
@@ -28,7 +28,7 @@ public class SignupHandler implements MessageHandler {
 
         log.debug("Handling SIGNUP_REQUEST from {}", message.getSender());
         try {
-            ValidationUtil.validateCredentials(request.getUsername(), request.getPassword());
+            UserValidator.validateCredentials(request.getUsername(), request.getPassword());
         } catch (ValidationException e) {
             throw new SignupValidationException(e.getMessage(), request.getUsername());
         }

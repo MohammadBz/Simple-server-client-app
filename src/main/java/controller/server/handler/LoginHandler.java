@@ -7,7 +7,7 @@ import exception.validation.ValidationException;
 import service.server.business.auth.AuthService;
 import service.server.core.ClientConnection;
 import protocol.message.Message;
-import service.common.validation.ValidationUtil;
+import service.common.validation.UserValidator;
 import lombok.extern.slf4j.Slf4j;
 import infrastructure.serialization.JsonUtil;
 import protocol.message.factory.ResponseFactory;
@@ -45,7 +45,7 @@ public class LoginHandler implements MessageHandler {
 
     private void validateLogin(LoginRequestDTO request) {
         try {
-            ValidationUtil.validateCredentials(request.getUsername(), request.getPassword());
+            UserValidator.validateCredentials(request.getUsername(), request.getPassword());
         } catch (ValidationException e) {
             throw new LoginValidationException(request.getUsername(), e.getMessage());
         }

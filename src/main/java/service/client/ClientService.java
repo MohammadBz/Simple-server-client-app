@@ -7,7 +7,7 @@ import exception.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
 import protocol.message.MessageType;
-import service.common.validation.ValidationUtil;
+import service.common.validation.UserValidator;
 import infrastructure.serialization.JsonUtil;
 import protocol.message.factory.RequestFactory;
 
@@ -27,7 +27,7 @@ public class ClientService {
 
     public void login(String username, String password) throws ValidationException, ConnectionException {
 
-        ValidationUtil.validateCredentials(username, password);
+        UserValidator.validateCredentials(username, password);
 
         LoginRequestDTO dto = new LoginRequestDTO(username, password);
 
@@ -39,7 +39,7 @@ public class ClientService {
 
     public void signup(String username, String password) throws ValidationException, ConnectionException {
 
-        ValidationUtil.validateCredentials(username, password);
+        UserValidator.validateCredentials(username, password);
 
         SignupRequestDTO dto = new SignupRequestDTO(username, password);
 
