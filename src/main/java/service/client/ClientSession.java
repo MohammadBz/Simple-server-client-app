@@ -1,30 +1,11 @@
 package service.client;
 
-import lombok.extern.slf4j.Slf4j;
+public interface ClientSession {
+    public void authenticate(String username);
 
-@Slf4j
-public class ClientSession {
+    public void clear();
 
-    private String username;
-    private boolean authenticated;
+    public boolean isAuthenticated();
 
-    public void authenticate(String username) {
-        this.username = username;
-        this.authenticated = true;
-    }
-
-    public void clear() {
-        log.info("Clearing client session");
-
-        this.username = null;
-        this.authenticated = false;
-    }
-
-    public boolean isAuthenticated() {
-        return authenticated;
-    }
-
-    public String getUsername() {
-        return username;
-    }
+    public String getUsername();
 }

@@ -21,7 +21,7 @@ public class ClientApplication {
     private final RequestFactory requestFactory;
 
     public ClientApplication() {
-        this.session = new ClientSession();
+        this.session = new ClientSessionImpl();
         this.ui = new ConsoleUI(session);
         this.serializer = new JacksonSerializer();
         this.client = new SocketChatClient(null, serializer);
