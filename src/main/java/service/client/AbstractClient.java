@@ -2,16 +2,19 @@ package service.client;
 
 import infrastructure.network.ConnectionManager;
 import infrastructure.network.SocketConnectionManager;
+import infrastructure.serialization.Serializer;
 import launcher.client.event.ClientEventHandler;
 
 public abstract class AbstractClient implements ChatClient {
     protected final ConnectionManager connectionManager;
     protected ClientEventHandler eventHandler;
     protected ClientListener listener;
+    protected Serializer serializer;
 
-    public AbstractClient(ClientEventHandler eventHandler) {
+    public AbstractClient(ClientEventHandler eventHandler, Serializer serializer) {
         this.connectionManager = new SocketConnectionManager();
         this.eventHandler = eventHandler;
+        this.serializer = serializer;
     }
 
     @Override
@@ -23,7 +26,7 @@ public abstract class AbstractClient implements ChatClient {
     }
 
     private void startListener() {
-        listener = new ClientListener(connectionManager, eventHandler);
+        listener = new ClientListener(connectionManager, eventHandler, serializer);
         new Thread(listener).start();
     }
 

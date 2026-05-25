@@ -8,16 +8,18 @@ import exception.technical.JsonDeserializationException;
 import exception.technical.JsonSerializationException;
 
 
-public class JsonUtil {
+public class JacksonSerializer implements Serializer {
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper;
 
-    static {
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    public JacksonSerializer() {
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.registerModule(new JavaTimeModule());
+        this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
-    public static String toJson(Object obj) {
+    @Override
+    public String serialize(Object obj) {
         try {
             return objectMapper.writeValueAsString(obj);
         } catch (JsonProcessingException e) {
@@ -25,11 +27,12 @@ public class JsonUtil {
         }
     }
 
-    public static <T> T fromJson(String json, Class<T> clazz) {
+    @Override
+    public <T> T deserialize(String json, Class<T> clazz) {
         try {
             return objectMapper.readValue(json, clazz);
         } catch (Exception e) {
-            throw new JsonDeserializationException(json, e);
+            throw new JsonDeserializationException("Failed to deserialize to " + clazz.getSimpleName(), e);
         }
     }
 }

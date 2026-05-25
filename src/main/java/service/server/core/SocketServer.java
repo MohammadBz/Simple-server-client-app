@@ -2,6 +2,8 @@ package service.server.core;
 
 import infrastructure.network.ConnectionManager;
 import infrastructure.network.SocketConnectionManager;
+import infrastructure.serialization.JacksonSerializer;
+import infrastructure.serialization.Serializer;
 import service.server.business.auth.AuthServiceImpl;
 import service.server.errorResolver.ServerErrorResolver;
 import service.server.session.ConnectionRegistry;
@@ -28,16 +30,19 @@ public class SocketServer extends AbstractServer {
     private final ConnectionRegistry connectionRegistry;
     private final ServerErrorResolver systemErrorResolver;
     private final ServerErrorResolver serverBusinessErrorResolver;
+    private final Serializer serializer;
 
     public SocketServer(int port, CoreServerManager serverManager) {
         this.port = port;
         this.authService = new AuthServiceImpl();
         this.connectionManager = new SocketConnectionManager();
         this.serverManager = serverManager;
-        this.handlerFactory = new HandlerFactory(authService, serverManager);
+        this.serializer = new JacksonSerializer();
+        this.handlerFactory = new HandlerFactory(authService, serverManager, serializer);
         this.connectionRegistry = new ConnectionRegistryImpl();
         this.systemErrorResolver = new ServerSystemErrorResolver();
         this.serverBusinessErrorResolver = new ServerBusinessErrorResolver();
+
     }
 
     @Override
@@ -50,7 +55,7 @@ public class SocketServer extends AbstractServer {
 
             ConnectionManager connectionManager = new SocketConnectionManager(socket);
 
-            clientHandler = new ClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry, serverBusinessErrorResolver, systemErrorResolver);
+            clientHandler = new ClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry, serverBusinessErrorResolver, systemErrorResolver, serializer);
             connectionRegistry.register(clientHandler);
 
             Thread thread = new Thread(clientHandler);

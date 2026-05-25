@@ -1,6 +1,7 @@
 package controller.server.handler;
 
 import exception.validation.LoginValidationException;
+import infrastructure.serialization.Serializer;
 import protocol.dto.auth.LoginRequestDTO;
 import exception.business.MessageProcessingException;
 import exception.validation.ValidationException;
@@ -9,7 +10,6 @@ import service.server.core.ClientConnection;
 import protocol.message.Message;
 import service.common.validation.UserValidator;
 import lombok.extern.slf4j.Slf4j;
-import infrastructure.serialization.JsonUtil;
 import protocol.message.factory.ResponseFactory;
 import service.server.core.SessionOperations;
 
@@ -19,16 +19,18 @@ public class LoginHandler implements MessageHandler {
 
     private final AuthService authService;
     private final SessionOperations sessionOperations;
+    private final Serializer serializer;
 
-    public LoginHandler(AuthService authService, SessionOperations serverManager) {
+    public LoginHandler(AuthService authService, SessionOperations serverManager, Serializer serializer) {
         this.authService = authService;
         this.sessionOperations = serverManager;
+        this.serializer = serializer;
     }
 
     @Override
     public void handle(Message message, ClientConnection Clientconnection) throws MessageProcessingException {
 
-        LoginRequestDTO request = JsonUtil.fromJson((String) message.getPayload(), LoginRequestDTO.class);
+        LoginRequestDTO request = serializer.deserialize(message.getPayload(), LoginRequestDTO.class);
 
 
         log.debug("Handling LOGIN_REQUEST from {}", message.getSender());

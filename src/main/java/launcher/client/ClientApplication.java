@@ -1,5 +1,7 @@
 package launcher.client;
 
+import infrastructure.serialization.JacksonSerializer;
+import infrastructure.serialization.Serializer;
 import service.client.AbstractClient;
 import service.client.SocketChatClient;
 import service.client.ClientService;
@@ -16,18 +18,21 @@ public class ClientApplication {
     private final AbstractClient client;
     private final ClientService service;
     private final ClientController controller;
+    private final Serializer serializer;
 
     public ClientApplication() {
         this.session = new ClientSession();
         this.ui = new ConsoleUI(session);
-
-        this.client = new SocketChatClient(null);
-        this.service = new ClientService(client, session);
+        this.serializer = new JacksonSerializer();
+        this.client = new SocketChatClient(null, serializer);
+        this.service = new ClientService(client, session, serializer);
 
         this.controller = new ClientController(service, session, ui);
 
         this.ui.setController(controller);
         this.client.setEventHandler(controller);
+
+
     }
 
     public void start(String host, int port) {

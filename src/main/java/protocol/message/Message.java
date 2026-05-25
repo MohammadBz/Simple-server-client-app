@@ -1,6 +1,6 @@
 package protocol.message;
 
-import infrastructure.serialization.JsonUtil;
+import infrastructure.serialization.JacksonSerializer;
 
 public class Message {
 
@@ -17,13 +17,6 @@ public class Message {
     public Message() {
     }
 
-    public String toJson() {
-        return JsonUtil.toJson(this);
-    }
-
-    public static Message fromJson(String json) {
-        return JsonUtil.fromJson(json, Message.class);
-    }
 
     public MessageType getType() {
         return type;

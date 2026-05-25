@@ -2,13 +2,14 @@ package service.client;
 
 import exception.technical.ConnectionException;
 import infrastructure.network.ConnectionManager;
+import infrastructure.serialization.Serializer;
 import protocol.dto.chat.DeliveryStatusDTO;
 import protocol.dto.chat.OnlineUsersResponseDTO;
 import protocol.response.ResponseDTO;
 import protocol.dto.chat.IncomingMessageDTO;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
-import infrastructure.serialization.JsonUtil;
+import infrastructure.serialization.JacksonSerializer;
 import launcher.client.event.ClientEventHandler;
 
 
@@ -17,18 +18,21 @@ public class ClientListener implements Runnable {
 
     private final ConnectionManager connectionManager;
     private final ClientEventHandler eventHandler;
+    private final Serializer serializer;
+
     private volatile boolean running = true;
 
-    public ClientListener(ConnectionManager connectionManager, ClientEventHandler clientEventHandler) {
+    public ClientListener(ConnectionManager connectionManager, ClientEventHandler clientEventHandler, Serializer serializer) {
         this.connectionManager = connectionManager;
         this.eventHandler = clientEventHandler;
+        this.serializer = serializer;
     }
 
     @Override
     public void run() {
         try {
             while (running) {
-                Message message = Message.fromJson(connectionManager.receive());
+                Message message = serializer.deserialize(connectionManager.receive(), Message.class);
                 log.debug("Received message: {}", message.getType());
 
                 dispatch(message);
@@ -73,51 +77,51 @@ public class ClientListener implements Runnable {
 
     private void handleLoginResponse(Message message) {
 
-        ResponseDTO response = JsonUtil.fromJson((String) message.getPayload(), ResponseDTO.class);
+        ResponseDTO response = serializer.deserialize(message.getPayload(), ResponseDTO.class);
         log.info("Processing login response");
         eventHandler.onLoginResponse(response);
     }
 
     private void handleSystemNotification(Message message) {
-        ResponseDTO response = JsonUtil.fromJson((String) message.getPayload(), ResponseDTO.class);
+        ResponseDTO response = serializer.deserialize(message.getPayload(), ResponseDTO.class);
         log.info("Processing system notification");
         eventHandler.onSystemNotifications(response);
     }
 
     private void handleLogOutResponse(Message message) {
-        ResponseDTO response = JsonUtil.fromJson((String) message.getPayload(), ResponseDTO.class);
+        ResponseDTO response = serializer.deserialize(message.getPayload(), ResponseDTO.class);
         log.info("Processing logout response");
         eventHandler.onLogoutResponse(response);
     }
 
     private void handleSignupResponse(Message message) {
 
-        ResponseDTO response = JsonUtil.fromJson((String) message.getPayload(), ResponseDTO.class);
+        ResponseDTO response = serializer.deserialize(message.getPayload(), ResponseDTO.class);
         log.info("Processing sign up response");
         eventHandler.onSignupResponse(response);
 
     }
 
     private void handleIncomingMessage(Message message) {
-        IncomingMessageDTO dto = JsonUtil.fromJson((String) message.getPayload(), IncomingMessageDTO.class);
+        IncomingMessageDTO dto = serializer.deserialize(message.getPayload(), IncomingMessageDTO.class);
         log.info("Incoming message received from {}", dto.getSender());
         eventHandler.onIncomingMessage(dto);
     }
 
     private void handleDeliveryStatus(Message message) {
-        DeliveryStatusDTO dto = JsonUtil.fromJson((String) message.getPayload(), DeliveryStatusDTO.class);
+        DeliveryStatusDTO dto = serializer.deserialize(message.getPayload(), DeliveryStatusDTO.class);
         log.info("Handling delivery status");
         eventHandler.onDeliveryStatus(dto);
     }
 
     private void handleOnlineUsers(Message message) {
-        OnlineUsersResponseDTO dto = JsonUtil.fromJson((String) message.getPayload(), OnlineUsersResponseDTO.class);
+        OnlineUsersResponseDTO dto = serializer.deserialize(message.getPayload(), OnlineUsersResponseDTO.class);
         log.info("Handling online users response");
         eventHandler.onOnlineUsers(dto);
     }
 
     private void handleDisconnect(Message message) {
-        ResponseDTO response = JsonUtil.fromJson((String) message.getPayload(), ResponseDTO.class);
+        ResponseDTO response = serializer.deserialize(message.getPayload(), ResponseDTO.class);
         log.info("Handling disconnect response");
         eventHandler.onDisconnectResponse(response);
     }

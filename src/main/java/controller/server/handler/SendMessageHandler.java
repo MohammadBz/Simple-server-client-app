@@ -1,6 +1,7 @@
 package controller.server.handler;
 
 import exception.business.UnauthorizedException;
+import infrastructure.serialization.Serializer;
 import protocol.dto.chat.SendMessageRequestDTO;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
@@ -9,7 +10,6 @@ import protocol.message.Message;
 import protocol.message.factory.ResponseFactory;
 import protocol.response.ResponseMessages;
 import service.server.core.MessageOperations;
-import infrastructure.serialization.JsonUtil;
 import service.common.validation.MessageValidator;
 
 
@@ -17,15 +17,17 @@ import service.common.validation.MessageValidator;
 public class SendMessageHandler implements MessageHandler {
 
     private final MessageOperations messageOperations;
+    private final Serializer serializer;
 
-    public SendMessageHandler(MessageOperations serverManager) {
+    public SendMessageHandler(MessageOperations serverManager, Serializer serializer) {
         this.messageOperations = serverManager;
+        this.serializer = serializer;
     }
 
     @Override
     public void handle(Message message, ClientConnection Clientconnection) {
 
-        SendMessageRequestDTO request = JsonUtil.fromJson(message.getPayload(), SendMessageRequestDTO.class);
+        SendMessageRequestDTO request = serializer.deserialize(message.getPayload(), SendMessageRequestDTO.class);
 
         if (!Clientconnection.getSession().isAuthenticated()) {
             throw new UnauthorizedException("User not authenticated.");

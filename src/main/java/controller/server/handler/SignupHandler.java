@@ -3,7 +3,7 @@ package controller.server.handler;
 import exception.business.MessageProcessingException;
 import exception.validation.SignupValidationException;
 import exception.validation.ValidationException;
-import infrastructure.serialization.JsonUtil;
+import infrastructure.serialization.Serializer;
 import protocol.message.Message;
 import protocol.dto.auth.SignupRequestDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -16,15 +16,17 @@ import protocol.message.factory.ResponseFactory;
 public class SignupHandler implements MessageHandler {
 
     private final AuthService authService;
+    private final Serializer serializer;
 
-    public SignupHandler(AuthService authService) {
+    public SignupHandler(AuthService authService, Serializer serializer) {
         this.authService = authService;
+        this.serializer = serializer;
     }
 
     @Override
     public void handle(Message message, ClientConnection Clientconnection) throws MessageProcessingException {
 
-        SignupRequestDTO request = JsonUtil.fromJson((String) message.getPayload(), SignupRequestDTO.class);
+        SignupRequestDTO request = serializer.deserialize((String) message.getPayload(), SignupRequestDTO.class);
 
         log.debug("Handling SIGNUP_REQUEST from {}", message.getSender());
         try {

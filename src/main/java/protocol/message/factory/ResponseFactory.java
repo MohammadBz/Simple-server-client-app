@@ -1,5 +1,6 @@
 package protocol.message.factory;
 
+import infrastructure.serialization.Serializer;
 import protocol.response.ResponseDTO;
 import protocol.response.ResponseMessages;
 import protocol.message.Message;
@@ -7,12 +8,18 @@ import protocol.message.MessageType;
 import domain.chat.MessageStatus;
 import protocol.dto.chat.DeliveryStatusDTO;
 import protocol.dto.chat.OnlineUsersResponseDTO;
-import infrastructure.serialization.JsonUtil;
+import infrastructure.serialization.JacksonSerializer;
 
 import java.util.List;
 import java.util.UUID;
 
 public final class ResponseFactory {
+
+    private static Serializer serializer;
+
+    static {
+        serializer = new JacksonSerializer();
+    }
 
     private ResponseFactory() {
     }
@@ -37,14 +44,14 @@ public final class ResponseFactory {
 
         DeliveryStatusDTO dto = new DeliveryStatusDTO(messageId, status, details);
 
-        return new Message(MessageType.DELIVERY_STATUS, "launcher", JsonUtil.toJson(dto));
+        return new Message(MessageType.DELIVERY_STATUS, "launcher", serializer.serialize(dto));
     }
 
     public static Message onlineUsers(List<String> users) {
 
         OnlineUsersResponseDTO dto = new OnlineUsersResponseDTO(users);
 
-        return new Message(MessageType.ONLINE_USERS_RESPONSE, "launcher", JsonUtil.toJson(dto));
+        return new Message(MessageType.ONLINE_USERS_RESPONSE, "launcher", serializer.serialize(dto));
     }
 
     public static Message disconnect() {
@@ -62,6 +69,6 @@ public final class ResponseFactory {
 
     private static Message build(MessageType type, boolean success, String text) {
         ResponseDTO dto = new ResponseDTO(success, text);
-        return new Message(type, "launcher", JsonUtil.toJson(dto));
+        return new Message(type, "launcher", serializer.serialize(dto));
     }
 }

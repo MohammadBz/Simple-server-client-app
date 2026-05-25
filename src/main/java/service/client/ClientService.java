@@ -1,5 +1,6 @@
 package service.client;
 
+import infrastructure.serialization.Serializer;
 import protocol.dto.auth.LoginRequestDTO;
 import protocol.dto.auth.SignupRequestDTO;
 import exception.technical.ConnectionException;
@@ -8,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
 import protocol.message.MessageType;
 import service.common.validation.UserValidator;
-import infrastructure.serialization.JsonUtil;
 import protocol.message.factory.RequestFactory;
 
 
@@ -18,10 +18,12 @@ public class ClientService {
     private final ChatClient client;
     private final ClientSession session;
     private String pendingLoginUsername;
+    private final Serializer serializer;
 
-    public ClientService(ChatClient client, ClientSession session) {
+    public ClientService(ChatClient client, ClientSession session, Serializer serializer) {
         this.client = client;
         this.session = session;
+        this.serializer = serializer;
 
     }
 
@@ -31,7 +33,7 @@ public class ClientService {
 
         LoginRequestDTO dto = new LoginRequestDTO(username, password);
 
-        Message message = new Message(MessageType.LOGIN_REQUEST, username, JsonUtil.toJson(dto));
+        Message message = new Message(MessageType.LOGIN_REQUEST, username, serializer.serialize(dto));
         pendingLoginUsername = username;
         log.info("Sending login request for '{}'", username);
         client.send(message);
@@ -43,7 +45,7 @@ public class ClientService {
 
         SignupRequestDTO dto = new SignupRequestDTO(username, password);
 
-        Message message = new Message(MessageType.SIGNUP_REQUEST, username, JsonUtil.toJson(dto));
+        Message message = new Message(MessageType.SIGNUP_REQUEST, username, serializer.serialize(dto));
         log.info("Sending signup request for '{}'", username);
         client.send(message);
     }

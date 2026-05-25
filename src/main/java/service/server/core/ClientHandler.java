@@ -14,7 +14,7 @@ import controller.server.handler.MessageHandler;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
 import protocol.dto.chat.IncomingMessageDTO;
-import infrastructure.serialization.JsonUtil;
+import infrastructure.serialization.Serializer;
 import protocol.message.factory.ResponseFactory;
 
 import java.util.UUID;
@@ -23,6 +23,7 @@ import java.util.UUID;
 public class ClientHandler implements Runnable, ClientConnection {
 
     private final ConnectionManager connectionManager;
+    private final Serializer serializer;
     private final HandlerFactory handlerFactory;
     private final ConnectionRegistry connectionRegistry;
     private final ServerErrorResolver serverBusinessErrorResolver;
@@ -36,13 +37,14 @@ public class ClientHandler implements Runnable, ClientConnection {
     private final String clientId = UUID.randomUUID().toString();
 
     public ClientHandler(ConnectionManager connectionManager, HandlerFactory handlerFactory, CoreServerManager serverManager, ConnectionRegistry connectionRegistry, ServerErrorResolver serverBusinessErrorResolver,
-                         ServerErrorResolver systemErrorResolver) {
+                         ServerErrorResolver systemErrorResolver, Serializer serializer) {
         this.connectionManager = connectionManager;
         this.handlerFactory = handlerFactory;
         this.serverManager = serverManager;
         this.connectionRegistry = connectionRegistry;
         this.serverBusinessErrorResolver = serverBusinessErrorResolver;
         this.systemErrorResolver = systemErrorResolver;
+        this.serializer = serializer;
         this.session = new Session();
     }
 
@@ -65,7 +67,7 @@ public class ClientHandler implements Runnable, ClientConnection {
 
     private void processMessage(String rawJson) {
         try {
-            Message message = JsonUtil.fromJson(rawJson, Message.class);
+            Message message = serializer.deserialize(rawJson, Message.class);
 
             log.debug("Received message type: {} from: {}", message.getType(), clientId);
 
@@ -87,7 +89,7 @@ public class ClientHandler implements Runnable, ClientConnection {
     @Override
     public synchronized void send(Message message) {
         try {
-            connectionManager.send(message.toJson());
+            connectionManager.send(serializer.serialize(message));
         } catch (ConnectionException e) {
             log.warn("Failed to send message to client: {} , {}", clientId, e.getMessage());
         }
@@ -103,7 +105,7 @@ public class ClientHandler implements Runnable, ClientConnection {
         try {
             IncomingMessageDTO dto = new IncomingMessageDTO(chatMessage.getSender(), chatMessage.getContent(), chatMessage.getTimestamp());
 
-            Message outgoing = new Message(MessageType.INCOMING_MESSAGE, "launcher", JsonUtil.toJson(dto));
+            Message outgoing = new Message(MessageType.INCOMING_MESSAGE, "launcher", serializer.serialize(dto));
 
             send(outgoing);
 
@@ -126,7 +128,7 @@ public class ClientHandler implements Runnable, ClientConnection {
     @Override
     public void disconnect(String reason) {
         try {
-            connectionManager.send(ResponseFactory.systemNotification(reason).toJson());
+            connectionManager.send(serializer.serialize(ResponseFactory.systemNotification(reason)));
         } catch (Exception e) {
             log.warn("Failed to notify client before disconnect");
         } finally {
