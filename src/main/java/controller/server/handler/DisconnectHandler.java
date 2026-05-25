@@ -5,14 +5,12 @@ import service.server.core.ServerManager;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
 import protocol.message.factory.ResponseFactory;
+import service.server.core.SessionOperations;
 
 @Slf4j
 public class DisconnectHandler implements MessageHandler {
 
-    private final ServerManager serverManager;
-
-    public DisconnectHandler(ServerManager serverManager) {
-        this.serverManager = serverManager;
+    public DisconnectHandler() {
     }
 
     @Override
