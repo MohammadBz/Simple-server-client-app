@@ -1,6 +1,7 @@
 package service.server.core;
 
 import service.server.business.auth.AuthServiceImpl;
+import service.server.errorResolver.ServerErrorResolver;
 import service.server.session.ConnectionRegistry;
 import controller.server.handler.HandlerFactory;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,8 @@ public class SocketServer extends AbstractServer {
     private final ConnectionManager connectionManager;
     private final CoreServerManager serverManager;
     private final ConnectionRegistry connectionRegistry;
-    private final ServerSystemErrorResolver systemErrorResolver;
-    private final ServerBusinessErrorResolver serverBusinessErrorResolver;
+    private final ServerErrorResolver systemErrorResolver;
+    private final ServerErrorResolver serverBusinessErrorResolver;
 
     public SocketServer(int port, CoreServerManager serverManager) {
         this.port = port;
