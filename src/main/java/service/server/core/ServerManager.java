@@ -9,7 +9,7 @@ import domain.chat.ChatMessage;
 import java.util.List;
 
 @Slf4j
-public class ServerManager implements AdminOperations {
+public class ServerManager implements AdminOperations, MessageOperations, SessionOperations {
 
     private final SessionRegistry sessionRegistry;
     private final RoutingService routingService;
@@ -20,14 +20,17 @@ public class ServerManager implements AdminOperations {
         this.routingService = new RoutingService(sessionRegistry);
     }
 
+    @Override
     public void registerSession(String username, ClientConnection Clientconnection) {
         sessionRegistry.register(username, Clientconnection);
     }
 
+    @Override
     public void unregisterSession(String username) {
         sessionRegistry.unregister(username);
     }
 
+    @Override
     public ChatMessage sendMessage(ChatMessage chatMessage) {
         return routingService.route(chatMessage);
     }
@@ -54,8 +57,9 @@ public class ServerManager implements AdminOperations {
     public boolean disconnectUser(String username) {
         return sessionRegistry.disconnect(username);
     }
-    
 
+
+    @Override
     public boolean isOnline(String username) {
         return sessionRegistry.exists(username);
     }
