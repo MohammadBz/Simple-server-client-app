@@ -1,18 +1,18 @@
 package controller.server.handler;
 
-import service.server.core.ClientConnection ;
-import service.server.core.ServerManager;
+import service.server.core.ClientConnection;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
 import protocol.message.factory.ResponseFactory;
+import service.server.core.SessionOperations;
 
 @Slf4j
 public class LogoutHandler implements MessageHandler {
 
-    private final ServerManager serverManager;
+    private final SessionOperations sessionOperations;
 
-    public LogoutHandler(ServerManager serverManager) {
-        this.serverManager = serverManager;
+    public LogoutHandler(SessionOperations serverManager) {
+        this.sessionOperations = serverManager;
     }
 
     @Override
@@ -22,7 +22,7 @@ public class LogoutHandler implements MessageHandler {
 
         log.info("Logging out user {}", username);
 
-        serverManager.unregisterSession(username);
+        sessionOperations.unregisterSession(username);
 
         Message response = ResponseFactory.logout();
 

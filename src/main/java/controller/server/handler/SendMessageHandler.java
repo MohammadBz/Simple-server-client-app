@@ -8,7 +8,7 @@ import service.server.core.ClientConnection;
 import protocol.message.Message;
 import protocol.message.factory.ResponseFactory;
 import protocol.response.ResponseMessages;
-import service.server.core.ServerManager;
+import service.server.core.MessageOperations;
 import infrastructure.serialization.JsonUtil;
 import service.common.validation.MessageValidator;
 
@@ -16,10 +16,10 @@ import service.common.validation.MessageValidator;
 @Slf4j
 public class SendMessageHandler implements MessageHandler {
 
-    private final ServerManager serverManager;
+    private final MessageOperations messageOperations;
 
-    public SendMessageHandler(ServerManager serverManager) {
-        this.serverManager = serverManager;
+    public SendMessageHandler(MessageOperations serverManager) {
+        this.messageOperations = serverManager;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class SendMessageHandler implements MessageHandler {
 
         ChatMessage chatMessage = new ChatMessage(Clientconnection.getSession().getUsername(), request.getRecipient(), request.getContent());
 
-        ChatMessage deliveredMessage = serverManager.sendMessage(chatMessage);
+        ChatMessage deliveredMessage = messageOperations.sendMessage(chatMessage);
 
         Message response = ResponseFactory.deliveryStatus(deliveredMessage.getId(), deliveredMessage.getStatus(), ResponseMessages.MESSAGE_SENT);
 

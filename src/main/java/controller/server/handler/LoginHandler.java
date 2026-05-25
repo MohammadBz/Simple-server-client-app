@@ -7,22 +7,22 @@ import exception.validation.ValidationException;
 import service.server.business.auth.AuthService;
 import service.server.core.ClientConnection;
 import protocol.message.Message;
-import service.server.core.ServerManager;
 import service.common.validation.ValidationUtil;
 import lombok.extern.slf4j.Slf4j;
 import infrastructure.serialization.JsonUtil;
 import protocol.message.factory.ResponseFactory;
+import service.server.core.SessionOperations;
 
 
 @Slf4j
 public class LoginHandler implements MessageHandler {
 
     private final AuthService authService;
-    private final ServerManager serverManager;
+    private final SessionOperations sessionOperations;
 
-    public LoginHandler(AuthService authService, ServerManager serverManager) {
+    public LoginHandler(AuthService authService, SessionOperations serverManager) {
         this.authService = authService;
-        this.serverManager = serverManager;
+        this.sessionOperations = serverManager;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class LoginHandler implements MessageHandler {
         authService.login(request.getUsername(), request.getPassword());
 
         Clientconnection.getSession().authenticate(request.getUsername());
-        serverManager.registerSession(request.getUsername(), Clientconnection);
+        sessionOperations.registerSession(request.getUsername(), Clientconnection);
         log.info("User '{}' logged in successfully", request.getUsername());
 
         Clientconnection.send(ResponseFactory.loginSuccess());

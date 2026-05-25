@@ -3,7 +3,6 @@ package controller.server.handler;
 import exception.business.MessageProcessingException;
 import exception.validation.SignupValidationException;
 import exception.validation.ValidationException;
-import service.server.core.ServerManager;
 import infrastructure.serialization.JsonUtil;
 import protocol.message.Message;
 import protocol.dto.auth.SignupRequestDTO;
@@ -18,7 +17,7 @@ public class SignupHandler implements MessageHandler {
 
     private final AuthService authService;
 
-    public SignupHandler(AuthService authService, ServerManager serverManage) {
+    public SignupHandler(AuthService authService) {
         this.authService = authService;
     }
 
