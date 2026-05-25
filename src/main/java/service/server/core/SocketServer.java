@@ -21,12 +21,12 @@ public class SocketServer extends AbstractServer {
     private final AuthService authService;
     private final HandlerFactory handlerFactory;
     private final ConnectionManager connectionManager;
-    private final ServerManager serverManager;
+    private final CoreServerManager serverManager;
     private final ConnectionRegistry connectionRegistry;
     private final ServerSystemErrorResolver systemErrorResolver;
     private final ServerBusinessErrorResolver serverBusinessErrorResolver;
 
-    public SocketServer(int port, ServerManager serverManager) {
+    public SocketServer(int port, CoreServerManager serverManager) {
         this.port = port;
         this.authService = new AuthService();
         this.connectionManager = new ConnectionManager();

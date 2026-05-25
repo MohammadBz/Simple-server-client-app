@@ -2,7 +2,7 @@ package controller.server.handler;
 
 import protocol.message.MessageType;
 import service.server.business.auth.AuthService;
-import service.server.core.ServerManager;
+import service.server.core.CoreServerManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +11,7 @@ public class HandlerFactory {
 
     private final Map<MessageType, MessageHandler> handlers = new HashMap<>();
 
-    public HandlerFactory(AuthService authService, ServerManager serverManager) {
+    public HandlerFactory(AuthService authService, CoreServerManager serverManager) {
         handlers.put(MessageType.LOGIN_REQUEST, new LoginHandler(authService, serverManager));
         handlers.put(MessageType.SIGNUP_REQUEST, new SignupHandler(authService));
         handlers.put(MessageType.SEND_MESSAGE_REQUEST, new SendMessageHandler(serverManager));

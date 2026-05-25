@@ -1,18 +1,17 @@
 package launcher.server;
 
 import service.server.core.AbstractServer;
-import service.server.core.Server;
 import service.server.core.SocketServer;
 import lombok.extern.slf4j.Slf4j;
 import ui.admin.AdminConsole;
 import controller.admin.AdminController;
 import service.server.business.admin.AdminService;
-import service.server.core.ServerManager;
+import service.server.core.CoreServerManager;
 
 @Slf4j
 public class ServerMain {
     public static void main(String[] args) {
-        ServerManager serverManager = new ServerManager();
+        CoreServerManager serverManager = new CoreServerManager();
 
         AbstractServer server = new SocketServer(12500, serverManager);
         serverManager.setShutdownCapable(server);

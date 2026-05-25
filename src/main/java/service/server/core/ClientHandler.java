@@ -28,7 +28,7 @@ public class ClientHandler implements Runnable, ClientConnection {
     private final ConnectionRegistry connectionRegistry;
     private final ServerBusinessErrorResolver serverBusinessErrorResolver;
     private final ServerSystemErrorResolver systemErrorResolver;
-    ServerManager serverManager;
+    CoreServerManager serverManager;
     private final Session session;
     private volatile boolean running = true;
     private volatile boolean closed = false;
@@ -36,7 +36,7 @@ public class ClientHandler implements Runnable, ClientConnection {
 
     private final String clientId = UUID.randomUUID().toString();
 
-    public ClientHandler(ConnectionManager connectionManager, HandlerFactory handlerFactory, ServerManager serverManager, ConnectionRegistry connectionRegistry, ServerBusinessErrorResolver serverBusinessErrorResolver,
+    public ClientHandler(ConnectionManager connectionManager, HandlerFactory handlerFactory, CoreServerManager serverManager, ConnectionRegistry connectionRegistry, ServerBusinessErrorResolver serverBusinessErrorResolver,
                          ServerSystemErrorResolver systemErrorResolver) {
         this.connectionManager = connectionManager;
         this.handlerFactory = handlerFactory;

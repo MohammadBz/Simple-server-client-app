@@ -9,13 +9,13 @@ import domain.chat.ChatMessage;
 import java.util.List;
 
 @Slf4j
-public class ServerManager implements AdminOperations, MessageOperations, SessionOperations {
+public class CoreServerManager implements AdminOperations, MessageOperations, SessionOperations {
 
     private final SessionRegistry sessionRegistry;
     private final RoutingService routingService;
     private ShutdownCapable shutdownCapable;
 
-    public ServerManager() {
+    public CoreServerManager() {
         this.sessionRegistry = new SessionRegistry();
         this.routingService = new RoutingService(sessionRegistry);
     }
