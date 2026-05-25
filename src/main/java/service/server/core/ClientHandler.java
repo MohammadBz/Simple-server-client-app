@@ -2,8 +2,8 @@ package service.server.core;
 
 import exception.base.BusinessException;
 import exception.business.MessageRoutingException;
-import service.common.errorResolver.BusinessErrorResolver;
-import service.common.errorResolver.SystemErrorResolver;
+import service.server.errorResolver.ServerBusinessErrorResolver;
+import service.server.errorResolver.ServerSystemErrorResolver;
 import exception.technical.ConnectionException;
 import service.server.session.ConnectionRegistry;
 import service.server.session.Session;
@@ -26,8 +26,8 @@ public class ClientHandler implements Runnable, ClientConnection {
     private final ConnectionManager connectionManager;
     private final HandlerFactory handlerFactory;
     private final ConnectionRegistry connectionRegistry;
-    private final BusinessErrorResolver businessErrorResolver;
-    private final SystemErrorResolver systemErrorResolver;
+    private final ServerBusinessErrorResolver serverBusinessErrorResolver;
+    private final ServerSystemErrorResolver systemErrorResolver;
     ServerManager serverManager;
     private final Session session;
     private volatile boolean running = true;
@@ -36,13 +36,13 @@ public class ClientHandler implements Runnable, ClientConnection {
 
     private final String clientId = UUID.randomUUID().toString();
 
-    public ClientHandler(ConnectionManager connectionManager, HandlerFactory handlerFactory, ServerManager serverManager, ConnectionRegistry connectionRegistry, BusinessErrorResolver businessErrorResolver,
-                         SystemErrorResolver systemErrorResolver) {
+    public ClientHandler(ConnectionManager connectionManager, HandlerFactory handlerFactory, ServerManager serverManager, ConnectionRegistry connectionRegistry, ServerBusinessErrorResolver serverBusinessErrorResolver,
+                         ServerSystemErrorResolver systemErrorResolver) {
         this.connectionManager = connectionManager;
         this.handlerFactory = handlerFactory;
         this.serverManager = serverManager;
         this.connectionRegistry = connectionRegistry;
-        this.businessErrorResolver = businessErrorResolver;
+        this.serverBusinessErrorResolver = serverBusinessErrorResolver;
         this.systemErrorResolver = systemErrorResolver;
         this.session = new Session();
     }
@@ -79,7 +79,7 @@ public class ClientHandler implements Runnable, ClientConnection {
             handler.handle(message, this);
 
         } catch (BusinessException e) {
-            businessErrorResolver.resolve(e, this);
+            serverBusinessErrorResolver.resolve(e, this);
         } catch (Exception e) {
             systemErrorResolver.resolve(e, this);
         }

@@ -1,4 +1,4 @@
-package service.common.errorResolver;
+package service.server.errorResolver;
 
 import exception.technical.ConnectionException;
 import exception.technical.JsonDeserializationException;
@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class SystemErrorResolver implements ErrorResolver {
+public class ServerSystemErrorResolver implements ServerErrorResolver {
     private final Map<Class<? extends Exception>, ErrorAction> registry = new HashMap<>();
 
-    public SystemErrorResolver() {
+    public ServerSystemErrorResolver() {
         register(ConnectionException.class, new ConnectionErrorAction());
         register(JsonSerializationException.class, new JsonSerializationErrorAction());
         register(JsonDeserializationException.class, new JsonDeserializationErrorAction());
@@ -101,7 +101,7 @@ public class SystemErrorResolver implements ErrorResolver {
         }
     }
 
-    private void register(Class<? extends Exception> type, SystemErrorResolver.ErrorAction action) {
+    private void register(Class<? extends Exception> type, ServerSystemErrorResolver.ErrorAction action) {
         registry.put(type, action);
     }
 }

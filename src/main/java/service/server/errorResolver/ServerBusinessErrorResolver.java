@@ -1,4 +1,4 @@
-package service.common.errorResolver;
+package service.server.errorResolver;
 
 import domain.chat.MessageStatus;
 import exception.business.InvalidCredentialsException;
@@ -19,10 +19,10 @@ import java.util.Map;
 import java.util.HashMap;
 
 @Slf4j
-public class BusinessErrorResolver implements ErrorResolver {
+public class ServerBusinessErrorResolver implements ServerErrorResolver {
     private final Map<Class<? extends Exception>, ErrorAction> registry = new HashMap<>();
 
-    public BusinessErrorResolver() {
+    public ServerBusinessErrorResolver() {
         register(LoginValidationException.class, new LoginValidationExceptionErrorAction());
         register(SignupValidationException.class, new SignupValidationExceptionErrorAction());
         register(InvalidCredentialsException.class, new InvalidCredentialsExceptionErrorAction());

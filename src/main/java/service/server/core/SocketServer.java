@@ -2,17 +2,15 @@ package service.server.core;
 
 import service.server.business.auth.AuthService;
 import service.server.session.ConnectionRegistry;
-import exception.technical.ConnectionException;
 import controller.server.handler.HandlerFactory;
 import lombok.extern.slf4j.Slf4j;
 import infrastructure.network.ConnectionManager;
-import service.common.errorResolver.BusinessErrorResolver;
-import service.common.errorResolver.SystemErrorResolver;
+import service.server.errorResolver.ServerBusinessErrorResolver;
+import service.server.errorResolver.ServerSystemErrorResolver;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 
 @Slf4j
 public class SocketServer extends AbstractServer {
@@ -25,8 +23,8 @@ public class SocketServer extends AbstractServer {
     private final ConnectionManager connectionManager;
     private final ServerManager serverManager;
     private final ConnectionRegistry connectionRegistry;
-    private final SystemErrorResolver systemErrorResolver;
-    private final BusinessErrorResolver businessErrorResolver;
+    private final ServerSystemErrorResolver systemErrorResolver;
+    private final ServerBusinessErrorResolver serverBusinessErrorResolver;
 
     public SocketServer(int port, ServerManager serverManager) {
         this.port = port;
@@ -35,8 +33,8 @@ public class SocketServer extends AbstractServer {
         this.serverManager = serverManager;
         this.handlerFactory = new HandlerFactory(authService, serverManager);
         this.connectionRegistry = new ConnectionRegistry();
-        this.systemErrorResolver = new SystemErrorResolver();
-        this.businessErrorResolver = new BusinessErrorResolver();
+        this.systemErrorResolver = new ServerSystemErrorResolver();
+        this.serverBusinessErrorResolver = new ServerBusinessErrorResolver();
     }
 
     @Override
@@ -49,7 +47,7 @@ public class SocketServer extends AbstractServer {
 
             ConnectionManager connectionManager = new ConnectionManager(socket);
 
-            clientHandler = new ClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry, businessErrorResolver, systemErrorResolver);
+            clientHandler = new ClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry, serverBusinessErrorResolver, systemErrorResolver);
             connectionRegistry.register(clientHandler);
 
             Thread thread = new Thread(clientHandler);
