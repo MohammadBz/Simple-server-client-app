@@ -1,11 +1,9 @@
 package service.client;
 
-import ch.qos.logback.core.net.server.Client;
 import launcher.client.event.ClientEventHandler;
 import protocol.message.Message;
 import exception.technical.ConnectionException;
 import lombok.extern.slf4j.Slf4j;
-import infrastructure.network.ConnectionManager;
 
 @Slf4j
 public class SocketChatClient extends AbstractClient {

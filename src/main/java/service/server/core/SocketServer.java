@@ -1,12 +1,13 @@
 package service.server.core;
 
+import infrastructure.network.ConnectionManager;
+import infrastructure.network.SocketConnectionManager;
 import service.server.business.auth.AuthServiceImpl;
 import service.server.errorResolver.ServerErrorResolver;
 import service.server.session.ConnectionRegistry;
 import service.server.session.ConnectionRegistryImpl;
 import controller.server.handler.HandlerFactory;
 import lombok.extern.slf4j.Slf4j;
-import infrastructure.network.ConnectionManager;
 import service.server.errorResolver.ServerBusinessErrorResolver;
 import service.server.errorResolver.ServerSystemErrorResolver;
 
@@ -31,7 +32,7 @@ public class SocketServer extends AbstractServer {
     public SocketServer(int port, CoreServerManager serverManager) {
         this.port = port;
         this.authService = new AuthServiceImpl();
-        this.connectionManager = new ConnectionManager();
+        this.connectionManager = new SocketConnectionManager();
         this.serverManager = serverManager;
         this.handlerFactory = new HandlerFactory(authService, serverManager);
         this.connectionRegistry = new ConnectionRegistryImpl();
@@ -47,7 +48,7 @@ public class SocketServer extends AbstractServer {
 
             log.info("New client connected: {}", socket.getRemoteSocketAddress());
 
-            ConnectionManager connectionManager = new ConnectionManager(socket);
+            ConnectionManager connectionManager = new SocketConnectionManager(socket);
 
             clientHandler = new ClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry, serverBusinessErrorResolver, systemErrorResolver);
             connectionRegistry.register(clientHandler);

@@ -1,6 +1,7 @@
 package service.client;
 
 import infrastructure.network.ConnectionManager;
+import infrastructure.network.SocketConnectionManager;
 import launcher.client.event.ClientEventHandler;
 
 public abstract class AbstractClient implements ChatClient {
@@ -9,7 +10,7 @@ public abstract class AbstractClient implements ChatClient {
     protected ClientListener listener;
 
     public AbstractClient(ClientEventHandler eventHandler) {
-        this.connectionManager = new ConnectionManager();
+        this.connectionManager = new SocketConnectionManager();
         this.eventHandler = eventHandler;
     }
 

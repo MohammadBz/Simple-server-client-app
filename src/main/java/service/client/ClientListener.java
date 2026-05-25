@@ -1,12 +1,12 @@
 package service.client;
 
 import exception.technical.ConnectionException;
+import infrastructure.network.ConnectionManager;
 import protocol.dto.chat.DeliveryStatusDTO;
 import protocol.dto.chat.OnlineUsersResponseDTO;
 import protocol.response.ResponseDTO;
 import protocol.dto.chat.IncomingMessageDTO;
 import lombok.extern.slf4j.Slf4j;
-import infrastructure.network.ConnectionManager;
 import protocol.message.Message;
 import infrastructure.serialization.JsonUtil;
 import launcher.client.event.ClientEventHandler;

@@ -2,6 +2,7 @@ package service.server.core;
 
 import exception.base.BusinessException;
 import exception.business.MessageRoutingException;
+import infrastructure.network.ConnectionManager;
 import service.server.errorResolver.ServerErrorResolver;
 import exception.technical.ConnectionException;
 import service.server.session.ConnectionRegistry;
@@ -12,7 +13,6 @@ import controller.server.handler.HandlerFactory;
 import controller.server.handler.MessageHandler;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
-import infrastructure.network.ConnectionManager;
 import protocol.dto.chat.IncomingMessageDTO;
 import infrastructure.serialization.JsonUtil;
 import protocol.message.factory.ResponseFactory;
