@@ -7,7 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import protocol.message.factory.ResponseFactory;
 import service.server.core.ClientConnection;
 
-
+import java.io.IOException;
+import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +20,8 @@ public class SystemErrorResolver implements ErrorResolver {
         register(ConnectionException.class, new ConnectionErrorAction());
         register(JsonSerializationException.class, new JsonSerializationErrorAction());
         register(JsonDeserializationException.class, new JsonDeserializationErrorAction());
+        register(SocketException.class, new SocketExceptionErrorAction());
+        register(IOException.class, new IOExceptionErrorAction());
     }
 
     @Override
@@ -29,7 +32,9 @@ public class SystemErrorResolver implements ErrorResolver {
             action.execute(e, client);
         } else {
             log.error("CRITICAL UNKNOWN ERROR: ", e);
-            client.disconnect("Internal Server Error occurred.");
+            if (client != null) {
+                client.disconnect("Internal Server Error occurred.");
+            }
         }
     }
 
@@ -41,6 +46,10 @@ public class SystemErrorResolver implements ErrorResolver {
     private class ConnectionErrorAction implements ErrorAction {
         @Override
         public void execute(Exception e, ClientConnection client) {
+            if (client == null) {
+                log.error("Network connection failure occurred before client initialization: {}", e.getMessage());
+                return;
+            }
             log.error("Network connection failure for client {}: {}", client.getClientId(), e.getMessage());
             client.stop();
         }
@@ -49,6 +58,10 @@ public class SystemErrorResolver implements ErrorResolver {
     private class JsonSerializationErrorAction implements ErrorAction {
         @Override
         public void execute(Exception e, ClientConnection client) {
+            if (client == null) {
+                log.error("Protocol Violation: Failed to serialize response. No client context available.");
+                return;
+            }
             log.error("Protocol Violation: Failed to serialize response for client {}", client.getClientId());
             client.disconnect("Protocol error: Server failed to format message.");
         }
@@ -57,6 +70,10 @@ public class SystemErrorResolver implements ErrorResolver {
     private class JsonDeserializationErrorAction implements ErrorAction {
         @Override
         public void execute(Exception e, ClientConnection client) {
+            if (client == null) {
+                log.warn("Invalid protocol format received: {}", e.getMessage());
+                return;
+            }
             log.warn("Invalid protocol format from client {}: {}", client.getClientId(), e.getMessage());
             client.send(ResponseFactory.systemNotification("Message format not recognized."));
         }
@@ -65,6 +82,10 @@ public class SystemErrorResolver implements ErrorResolver {
     private class SocketExceptionErrorAction implements ErrorAction {
         @Override
         public void execute(Exception e, ClientConnection client) {
+            if (client == null) {
+                log.warn("Socket closed unexpectedly: {}", e.getMessage());
+                return;
+            }
             log.warn("Socket closed unexpectedly for client: {}", e.getMessage());
             client.stop();
         }
@@ -74,7 +95,9 @@ public class SystemErrorResolver implements ErrorResolver {
         @Override
         public void execute(Exception e, ClientConnection client) {
             log.error("IO Error during communication: {}", e.getMessage());
-            client.disconnect("Server infrastructure error.");
+            if (client != null) {
+                client.disconnect("Server infrastructure error.");
+            }
         }
     }
 
