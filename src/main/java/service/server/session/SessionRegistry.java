@@ -1,60 +1,21 @@
 package service.server.session;
 
-import lombok.extern.slf4j.Slf4j;
 import service.server.core.ClientConnection;
-import protocol.response.ResponseMessages;
 
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 
-@Slf4j
-public class SessionRegistry {
+public interface SessionRegistry {
+    void register(String username, ClientConnection connection);
 
-    private final ConcurrentHashMap<String, ClientConnection> activeSessions = new ConcurrentHashMap<>();
+    void unregister(String username);
 
-    public void register(String username, ClientConnection handler) {
-        activeSessions.put(username, handler);
-        log.info("Registered session for user '{}'", username);
-    }
+    ClientConnection getClient(String username);
 
-    public void unregister(String username) {
-        if (username != null) {
-            activeSessions.remove(username);
-            log.info("Unregistered session for user '{}'", username);
-        }
-    }
+    boolean exists(String username);
 
-    public ClientConnection getClient(String username) {
-        return activeSessions.get(username);
-    }
+    List<String> getOnlineUsers();
 
-    public boolean exists(String username) {
-        return activeSessions.containsKey(username);
-    }
+    boolean disconnect(String username);
 
-    public List<String> getOnlineUsers() {
-        return List.copyOf(activeSessions.keySet());
-    }
-
-    public Boolean disconnect(String username) {
-        if (username == null) {
-            return false;
-        }
-        ClientConnection handler = getClient(username);
-        if (handler == null) {
-            return false;
-        }
-        handler.disconnect(ResponseMessages.DisconnectedByAdmin);
-        unregister(username);
-        return true;
-    }
-
-    public void disconnectAll() {
-        for (ClientConnection handler : activeSessions.values()) {
-            handler.disconnect(ResponseMessages.ServerShuttingDown);
-        }
-        activeSessions.clear();
-
-        log.info("All sessions disconnected.");
-    }
+    void disconnectAll();
 }

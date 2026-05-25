@@ -4,6 +4,7 @@ import service.server.business.admin.AdminOperations;
 import service.server.business.messageRoute.RoutingService;
 import service.server.business.messageRoute.RoutingServiceImpl;
 import service.server.session.SessionRegistry;
+import service.server.session.SessionRegistryImpl;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
 
@@ -17,7 +18,7 @@ public class CoreServerManager implements AdminOperations, MessageOperations, Se
     private ShutdownCapable shutdownCapable;
 
     public CoreServerManager() {
-        this.sessionRegistry = new SessionRegistry();
+        this.sessionRegistry = new SessionRegistryImpl();
         this.routingService = new RoutingServiceImpl(sessionRegistry);
     }
 
