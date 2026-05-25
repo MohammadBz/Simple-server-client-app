@@ -96,7 +96,7 @@ public class ClientHandler implements Runnable, ClientConnection {
 
     public void stop() {
         running = false;
-        connectionManager.close();
+        this.close();
     }
 
     @Override
