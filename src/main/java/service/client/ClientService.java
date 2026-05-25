@@ -15,11 +15,11 @@ import protocol.message.factory.RequestFactory;
 @Slf4j
 public class ClientService {
 
-    private final Client client;
+    private final ChatClient client;
     private final ClientSession session;
     private String pendingLoginUsername;
 
-    public ClientService(Client client, ClientSession session) {
+    public ClientService(ChatClient client, ClientSession session) {
         this.client = client;
         this.session = session;
 

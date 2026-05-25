@@ -1,6 +1,7 @@
 package launcher.client;
 
-import service.client.Client;
+import service.client.AbstractClient;
+import service.client.SocketChatClient;
 import service.client.ClientService;
 import service.client.ClientSession;
 import controller.client.ClientController;
@@ -12,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ClientApplication {
     private final ClientSession session;
     private final ConsoleUI ui;
-    private final Client client;
+    private final AbstractClient client;
     private final ClientService service;
     private final ClientController controller;
 
@@ -20,7 +21,7 @@ public class ClientApplication {
         this.session = new ClientSession();
         this.ui = new ConsoleUI(session);
 
-        this.client = new Client(null);
+        this.client = new SocketChatClient(null);
         this.service = new ClientService(client, session);
 
         this.controller = new ClientController(service, session, ui);
