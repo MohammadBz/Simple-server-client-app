@@ -4,6 +4,7 @@ import infrastructure.serialization.JacksonSerializer;
 import infrastructure.serialization.Serializer;
 import protocol.message.factory.RequestFactory;
 import protocol.message.factory.RequestFactoryImpl;
+import protocol.message.factory.ResponseFactory;
 import service.client.*;
 import controller.client.ClientController;
 import ui.client.ConsoleUI;
@@ -32,8 +33,6 @@ public class ClientApplication {
 
         this.ui.setController(controller);
         this.client.setEventHandler(controller);
-
-
     }
 
     public void start(String host, int port) {

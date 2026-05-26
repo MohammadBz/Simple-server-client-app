@@ -8,6 +8,7 @@ import launcher.client.event.ClientEventHandler;
 public abstract class AbstractClient implements ChatClient {
     protected final ConnectionManager connectionManager;
     protected ClientEventHandler eventHandler;
+    protected ResponseDispatcher responseDispatcher;
     protected ClientListener listener;
     protected Serializer serializer;
 
@@ -26,7 +27,8 @@ public abstract class AbstractClient implements ChatClient {
     }
 
     private void startListener() {
-        listener = new ClientListener(connectionManager, eventHandler, serializer);
+        responseDispatcher = new ResponseDispatcher(serializer, eventHandler);
+        listener = new ClientListener(connectionManager, eventHandler, serializer, responseDispatcher);
         new Thread(listener).start();
     }
 
