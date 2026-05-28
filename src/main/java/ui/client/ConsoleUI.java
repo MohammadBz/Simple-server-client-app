@@ -2,6 +2,7 @@ package ui.client;
 
 
 import controller.client.ClientController;
+import controller.client.SocketClientController;
 import service.client.ClientSession;
 
 import exception.technical.ConnectionException;

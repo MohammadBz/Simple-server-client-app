@@ -1,185 +1,21 @@
 package controller.client;
 
-import service.client.ClientService;
-import service.client.ClientSession;
-import launcher.client.event.ClientEventHandler;
-import domain.chat.MessageStatus;
-import lombok.extern.slf4j.Slf4j;
-import protocol.dto.chat.DeliveryStatusDTO;
-import protocol.dto.chat.IncomingMessageDTO;
-import protocol.dto.chat.OnlineUsersResponseDTO;
-import protocol.response.ResponseDTO;
-import protocol.response.ResponseMessages;
-import ui.client.ConsoleUI;
+public interface ClientController {
+    void login(String username, String password);
 
-import static java.lang.System.exit;
+    void signup(String username, String password);
 
-@Slf4j
-public class ClientController implements ClientEventHandler {
+    void sendMessage(String receiver, String content);
 
-    private final ClientService clientService;
-    private final ClientSession session;
-    private final ConsoleUI ui;
+    void requestOnlineUsers();
 
-    private volatile boolean running = true;
-    private volatile boolean waitingForServer = false;
+    void logout();
 
-    public ClientController(ClientService clientService, ClientSession session, ConsoleUI ui) {
-        this.clientService = clientService;
-        this.session = session;
-        this.ui = ui;
-    }
+    void disconnect();
 
-    public boolean isRunning() {
-        return running;
-    }
+    void shutdown();
 
-    public boolean isWaitingForServer() {
-        return waitingForServer;
-    }
+    boolean isRunning();
 
-    public void setWaitingForServer(boolean value) {
-        this.waitingForServer = value;
-    }
-
-    public void shutdown() {
-        running = false;
-        log.info("Shutting down client");
-        exit(0);
-    }
-
-    public void login(String username, String password) {
-        try {
-            waitingForServer = true;
-            clientService.login(username, password);
-        } catch (Exception e) {
-            waitingForServer = false;
-            ui.showMessage(e.getMessage());
-        }
-    }
-
-    public void signup(String username, String password) {
-        try {
-            waitingForServer = true;
-            clientService.signup(username, password);
-        } catch (Exception e) {
-            waitingForServer = false;
-            ui.showMessage(e.getMessage());
-        }
-    }
-
-    public void sendMessage(String receiver, String content) {
-        try {
-            waitingForServer = true;
-            clientService.sendMessage(receiver, content);
-        } catch (Exception e) {
-            waitingForServer = false;
-            ui.showMessage(e.getMessage());
-        }
-    }
-
-    public void requestOnlineUsers() {
-        try {
-            waitingForServer = true;
-            clientService.requestOnlineUsers();
-        } catch (Exception e) {
-            waitingForServer = false;
-            ui.showMessage(e.getMessage());
-        }
-    }
-
-    public void logout() {
-        try {
-            waitingForServer = true;
-            clientService.logout();
-        } catch (Exception e) {
-            waitingForServer = false;
-            ui.showMessage(e.getMessage());
-        }
-    }
-
-    public void disconnect() {
-        try {
-            waitingForServer = true;
-            clientService.disconnect();
-        } catch (Exception e) {
-            waitingForServer = false;
-            ui.showMessage(e.getMessage());
-            shutdown();
-        }
-    }
-
-    @Override
-    public void onLoginResponse(ResponseDTO response) {
-        if (response.isSuccess()) {
-            clientService.confirmLogin();
-            ui.showMessage("✅ LOGIN SUCCESS: " + response.getMessage());
-        } else {
-            ui.showMessage("❌ LOGIN FAILED: " + response.getMessage());
-        }
-        waitingForServer = false;
-    }
-
-    @Override
-    public void onSignupResponse(ResponseDTO response) {
-        if (response.isSuccess()) {
-            ui.showMessage("✅ SIGNUP SUCCESS: " + response.getMessage());
-        } else {
-            ui.showMessage("❌ SIGNUP FAILED: " + response.getMessage());
-        }
-        waitingForServer = false;
-    }
-
-    @Override
-    public void onIncomingMessage(IncomingMessageDTO message) {
-        ui.showIncomingMessage(message.getSender(), message.getContent());
-    }
-
-    @Override
-    public void onDeliveryStatus(DeliveryStatusDTO status) {
-        if (status.getStatus() == MessageStatus.DELIVERED) {
-            ui.showMessage("Message delivered successfully.");
-        } else {
-            ui.showMessage("Delivery failed: " + status.getDetails());
-        }
-        waitingForServer = false;
-    }
-
-    @Override
-    public void onOnlineUsers(OnlineUsersResponseDTO users) {
-        ui.showOnlineUsers(users.getUsers());
-        waitingForServer = false;
-    }
-
-    @Override
-    public void onConnectionLost(String reason) {
-        ui.showMessage("Connection lost: " + reason);
-        shutdown();
-    }
-
-    @Override
-    public void onDisconnectResponse(ResponseDTO response) {
-        ui.showMessage("Disconnected.");
-        shutdown();
-    }
-
-    @Override
-    public void onLogoutResponse(ResponseDTO response) {
-        if (response.isSuccess()) {
-            session.clear();
-            ui.showMessage("Logged out successfully.");
-        } else {
-            ui.showMessage("Logout failed: " + response.getMessage());
-        }
-        waitingForServer = false;
-    }
-
-    @Override
-    public void onSystemNotifications(ResponseDTO response) {
-        ui.showMessage("[SYSTEM] " + response.getMessage());
-
-        if (response.getMessage().contains(ResponseMessages.DisconnectedByAdmin) || response.getMessage().contains(ResponseMessages.ServerShuttingDown)) {
-            shutdown();
-        }
-    }
+    boolean isWaitingForServer();
 }

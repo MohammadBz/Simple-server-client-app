@@ -1,12 +1,12 @@
 package launcher.client;
 
+import controller.client.ClientController;
+import controller.client.SocketClientController;
 import infrastructure.serialization.JacksonSerializer;
 import infrastructure.serialization.Serializer;
 import protocol.message.factory.RequestFactory;
 import protocol.message.factory.RequestFactoryImpl;
-import protocol.message.factory.ResponseFactory;
 import service.client.*;
-import controller.client.ClientController;
 import ui.client.ConsoleUI;
 import exception.technical.ConnectionException;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ public class ClientApplication {
     private final ConsoleUI ui;
     private final AbstractClient client;
     private final ClientService service;
-    private final ClientController controller;
+    private final SocketClientController controller;
     private final Serializer serializer;
     private final RequestFactory requestFactory;
 
@@ -29,7 +29,7 @@ public class ClientApplication {
         this.requestFactory = new RequestFactoryImpl(serializer);
         this.service = new ClientServiceImpl(client, session, requestFactory);
 
-        this.controller = new ClientController(service, session, ui);
+        this.controller = new SocketClientController(service, session, ui);
 
         this.ui.setController(controller);
         this.client.setEventHandler(controller);
