@@ -51,7 +51,7 @@ public class SocketServer extends AbstractServer {
 
     @Override
     protected void acceptClient() {
-        ClientHandler clientHandler = null;
+        AbstractClientConnection clientHandler = null;
         try {
             Socket socket = serverSocket.accept();
 
@@ -59,7 +59,7 @@ public class SocketServer extends AbstractServer {
 
             ConnectionManager connectionManager = new SocketConnectionManager(socket);
 
-            clientHandler = new ClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry, serverBusinessErrorResolver, systemErrorResolver, serializer, responseFactory);
+            clientHandler = new SocketClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry, serverBusinessErrorResolver, systemErrorResolver, serializer, responseFactory);
             connectionRegistry.register(clientHandler);
 
             Thread thread = new Thread(clientHandler);
