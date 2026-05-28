@@ -1,29 +1,15 @@
 package launcher.server;
 
-import controller.admin.AdminController;
-import service.server.core.AbstractServer;
-import service.server.core.SocketServer;
+import launcher.server.ServerApplication;
 import lombok.extern.slf4j.Slf4j;
-import ui.admin.AdminConsole;
-import controller.admin.StandardAdminController;
-import service.server.business.admin.AdminServiceImpl;
-import service.server.core.CoreServerManager;
 
 @Slf4j
 public class ServerMain {
     public static void main(String[] args) {
-        CoreServerManager serverManager = new CoreServerManager();
+        int port = 12500;
 
-        AbstractServer server = new SocketServer(12500, serverManager);
-        serverManager.setShutdownCapable(server);
-        AdminServiceImpl adminService = new AdminServiceImpl(serverManager);
-        AdminController controller = new StandardAdminController(adminService);
-        AdminConsole console = new AdminConsole(controller);
-        try {
-            new Thread(console).start();
-            server.start();
-        } catch (Exception e) {
-            log.error("bruh");
-        }
+        ServerApplication app = new ServerApplication(port);
+        app.start();
+
     }
 }
