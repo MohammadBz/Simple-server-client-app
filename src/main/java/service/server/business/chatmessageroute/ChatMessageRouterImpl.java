@@ -1,18 +1,18 @@
-package service.server.business.messageRoute;
+package service.server.business.chatmessageroute;
 
-import exception.business.MessageRoutingException;
-import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
 import domain.chat.MessageStatus;
+import exception.business.MessageRoutingException;
+import lombok.extern.slf4j.Slf4j;
 import service.server.core.ClientConnection;
 import service.server.session.SessionRegistry;
 
 @Slf4j
-public class RoutingServiceImpl implements RoutingService {
+public class ChatMessageRouterImpl implements ChatMessageRouter {
 
     private final SessionRegistry sessionRegistry;
 
-    public RoutingServiceImpl(SessionRegistry sessionRegistry) {
+    public ChatMessageRouterImpl(SessionRegistry sessionRegistry) {
         this.sessionRegistry = sessionRegistry;
     }
 
