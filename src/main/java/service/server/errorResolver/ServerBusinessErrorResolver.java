@@ -1,4 +1,4 @@
-package service.server.errorResolver;
+package service.server.errorresolver;
 
 import domain.chat.MessageStatus;
 import exception.business.InvalidCredentialsException;
@@ -9,7 +9,7 @@ import exception.validation.LoginValidationException;
 import exception.validation.MessageValidationException;
 import exception.validation.SignupValidationException;
 import lombok.extern.slf4j.Slf4j;
-import protocol.message.factory.ResponseFactory;
+import protocol.response.factory.ResponseFactory;
 import protocol.response.ResponseMessages;
 import service.server.core.ClientConnection;
 

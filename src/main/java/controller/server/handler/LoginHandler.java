@@ -1,59 +1,52 @@
 package controller.server.handler;
 
-import exception.validation.LoginValidationException;
-import infrastructure.serialization.Serializer;
-import protocol.dto.auth.LoginRequestDTO;
 import exception.business.MessageProcessingException;
+import exception.validation.LoginValidationException;
 import exception.validation.ValidationException;
-import protocol.message.factory.RequestFactory;
-import protocol.message.factory.ResponseFactory;
+import lombok.extern.slf4j.Slf4j;
+import protocol.response.factory.ResponseFactory;
+import protocol.request.LoginRequest;
+import service.common.validation.UserValidator;
 import service.server.business.auth.AuthService;
 import service.server.core.ClientConnection;
-import protocol.message.Message;
-import service.common.validation.UserValidator;
-import lombok.extern.slf4j.Slf4j;
 import service.server.core.SessionOperations;
 
-
 @Slf4j
-public class LoginHandler implements MessageHandler {
+public class LoginHandler implements RequestHandler<LoginRequest> {
 
     private final AuthService authService;
     private final SessionOperations sessionOperations;
-    private final Serializer serializer;
     private final ResponseFactory responseFactory;
 
-    public LoginHandler(AuthService authService, SessionOperations serverManager, Serializer serializer, ResponseFactory responseFactory) {
+    public LoginHandler(AuthService authService, SessionOperations sessionOperations, ResponseFactory responseFactory) {
         this.authService = authService;
-        this.sessionOperations = serverManager;
-        this.serializer = serializer;
+        this.sessionOperations = sessionOperations;
         this.responseFactory = responseFactory;
     }
 
     @Override
-    public void handle(Message message, ClientConnection Clientconnection) throws MessageProcessingException {
+    public Class<LoginRequest> requestType() {
+        return LoginRequest.class;
+    }
 
-        LoginRequestDTO request = serializer.deserialize(message.getPayload(), LoginRequestDTO.class);
-
-
-        log.debug("Handling LOGIN_REQUEST from {}", message.getSender());
+    @Override
+    public void handle(LoginRequest request, ClientConnection clientConnection) throws MessageProcessingException {
+        log.debug("Handling LOGIN_REQUEST from {}", request.getSender());
         validateLogin(request);
 
-        authService.login(request.getUsername(), request.getPassword());
+        authService.login(request.getSender(), request.getPassword());
+        clientConnection.getSession().authenticate(request.getSender());
+        sessionOperations.registerSession(request.getSender(), clientConnection);
 
-        Clientconnection.getSession().authenticate(request.getUsername());
-        sessionOperations.registerSession(request.getUsername(), Clientconnection);
-        log.info("User '{}' logged in successfully", request.getUsername());
-
-        Clientconnection.send(responseFactory.loginSuccess());
+        log.info("User '{}' logged in successfully", request.getSender());
+        clientConnection.send(responseFactory.loginSuccess());
     }
 
-    private void validateLogin(LoginRequestDTO request) {
+    private void validateLogin(LoginRequest request) {
         try {
-            UserValidator.validateCredentials(request.getUsername(), request.getPassword());
+            UserValidator.validateCredentials(request.getSender(), request.getPassword());
         } catch (ValidationException e) {
-            throw new LoginValidationException(request.getUsername(), e.getMessage());
+            throw new LoginValidationException(request.getSender(), e.getMessage());
         }
     }
-
 }

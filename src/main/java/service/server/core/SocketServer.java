@@ -1,19 +1,19 @@
 package service.server.core;
 
+import controller.server.router.MessageRouter;
 import infrastructure.network.ConnectionManager;
 import infrastructure.network.SocketConnectionManager;
 import infrastructure.serialization.JacksonSerializer;
 import infrastructure.serialization.Serializer;
-import protocol.message.factory.ResponseFactory;
-import protocol.message.factory.ResponseFactoryImpl;
+import protocol.response.factory.ResponseFactory;
+import protocol.response.factory.ResponseFactoryImpl;
 import service.server.business.auth.AuthServiceImpl;
-import service.server.errorResolver.ServerErrorResolver;
+import service.server.errorresolver.ServerErrorResolver;
 import service.server.session.ConnectionRegistry;
 import service.server.session.ConnectionRegistryImpl;
-import controller.server.handler.HandlerFactory;
 import lombok.extern.slf4j.Slf4j;
-import service.server.errorResolver.ServerBusinessErrorResolver;
-import service.server.errorResolver.ServerSystemErrorResolver;
+import service.server.errorresolver.ServerBusinessErrorResolver;
+import service.server.errorresolver.ServerSystemErrorResolver;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -26,7 +26,7 @@ public class SocketServer extends AbstractServer {
     private ServerSocket serverSocket;
 
     private final AuthServiceImpl authService;
-    private final HandlerFactory handlerFactory;
+    private final MessageRouter messageRouter;
     private final ConnectionManager connectionManager;
     private final CoreServerManager serverManager;
     private final ConnectionRegistry connectionRegistry;
@@ -42,7 +42,7 @@ public class SocketServer extends AbstractServer {
         this.serverManager = serverManager;
         this.serializer = new JacksonSerializer();
         this.responseFactory = new ResponseFactoryImpl(serializer);
-        this.handlerFactory = new HandlerFactory(authService, serverManager, serializer, responseFactory);
+        this.messageRouter = new MessageRouter(authService, serverManager, responseFactory);
         this.connectionRegistry = new ConnectionRegistryImpl();
         this.systemErrorResolver = new ServerSystemErrorResolver(responseFactory);
         this.serverBusinessErrorResolver = new ServerBusinessErrorResolver(responseFactory);
@@ -59,7 +59,7 @@ public class SocketServer extends AbstractServer {
 
             ConnectionManager connectionManager = new SocketConnectionManager(socket);
 
-            clientHandler = new SocketClientHandler(connectionManager, handlerFactory, serverManager, connectionRegistry, serverBusinessErrorResolver, systemErrorResolver, serializer, responseFactory);
+            clientHandler = new SocketClientHandler(connectionManager, messageRouter, connectionRegistry, serverManager, responseFactory, serverBusinessErrorResolver, systemErrorResolver, serializer);
             connectionRegistry.register(clientHandler);
 
             Thread thread = new Thread(clientHandler);

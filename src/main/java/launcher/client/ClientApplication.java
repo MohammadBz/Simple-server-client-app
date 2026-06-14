@@ -1,11 +1,10 @@
 package launcher.client;
 
-import controller.client.ClientController;
 import controller.client.SocketClientController;
 import infrastructure.serialization.JacksonSerializer;
 import infrastructure.serialization.Serializer;
-import protocol.message.factory.RequestFactory;
-import protocol.message.factory.RequestFactoryImpl;
+import protocol.request.factory.RequestFactory;
+import protocol.request.factory.RequestFactoryImpl;
 import service.client.*;
 import ui.client.ConsoleUI;
 import exception.technical.ConnectionException;
@@ -26,7 +25,7 @@ public class ClientApplication {
         this.ui = new ConsoleUI(session);
         this.serializer = new JacksonSerializer();
         this.client = new SocketChatClient(null, serializer);
-        this.requestFactory = new RequestFactoryImpl(serializer);
+        this.requestFactory = new RequestFactoryImpl();
         this.service = new ClientServiceImpl(client, session, requestFactory);
 
         this.controller = new SocketClientController(service, session, ui);

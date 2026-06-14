@@ -1,4 +1,4 @@
-package protocol.message.factory;
+package protocol.response.factory;
 
 import infrastructure.serialization.Serializer;
 import protocol.response.ResponseDTO;

@@ -1,47 +1,47 @@
 package service.server.core;
 
 import exception.base.BusinessException;
-import exception.business.MessageRoutingException;
+import controller.server.router.MessageRouter;
 import infrastructure.network.ConnectionManager;
-import protocol.message.factory.ResponseFactory;
-import service.server.errorResolver.ServerErrorResolver;
+import service.server.errorresolver.ServerErrorResolver;
 import exception.technical.ConnectionException;
+import exception.business.MessageRoutingException;
 import service.server.session.ConnectionRegistry;
 import service.server.session.Session;
-import protocol.message.Message;
-import protocol.message.MessageType;
-import controller.server.handler.HandlerFactory;
-import controller.server.handler.MessageHandler;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
 import protocol.dto.chat.IncomingMessageDTO;
 import infrastructure.serialization.Serializer;
-
-import java.util.UUID;
+import protocol.message.Message;
+import protocol.message.MessageType;
+import protocol.response.factory.ResponseFactory;
+import protocol.request.BaseRequest;
 
 @Slf4j
 public class SocketClientHandler extends AbstractClientConnection {
 
     private final ConnectionManager connectionManager;
     private final Serializer serializer;
-    private final HandlerFactory handlerFactory;
+    private final MessageRouter messageRouter;
     private final ConnectionRegistry connectionRegistry;
+    private final CoreServerManager serverManager;
+    private final ResponseFactory responseFactory;
     private final ServerErrorResolver serverBusinessErrorResolver;
     private final ServerErrorResolver serverSystemErrorResolver;
-    private final ResponseFactory responseFactory;
-    CoreServerManager serverManager;
     private final Session session;
 
-    public SocketClientHandler(ConnectionManager connectionManager, HandlerFactory handlerFactory, CoreServerManager serverManager, ConnectionRegistry connectionRegistry, ServerErrorResolver serverBusinessErrorResolver,
-                               ServerErrorResolver systemErrorResolver, Serializer serializer, ResponseFactory responseFactory) {
+    public SocketClientHandler(ConnectionManager connectionManager, MessageRouter messageRouter, ConnectionRegistry connectionRegistry,
+                               CoreServerManager serverManager, ResponseFactory responseFactory,
+                               ServerErrorResolver serverBusinessErrorResolver, ServerErrorResolver systemErrorResolver,
+                               Serializer serializer) {
         this.connectionManager = connectionManager;
-        this.handlerFactory = handlerFactory;
-        this.serverManager = serverManager;
+        this.messageRouter = messageRouter;
         this.connectionRegistry = connectionRegistry;
+        this.serverManager = serverManager;
+        this.responseFactory = responseFactory;
         this.serverBusinessErrorResolver = serverBusinessErrorResolver;
         this.serverSystemErrorResolver = systemErrorResolver;
         this.serializer = serializer;
-        this.responseFactory = responseFactory;
         this.session = new Session();
     }
 
@@ -53,13 +53,8 @@ public class SocketClientHandler extends AbstractClientConnection {
 
     private void processMessage(String rawJson) {
         try {
-            Message message = serializer.deserialize(rawJson, Message.class);
-            MessageHandler handler = handlerFactory.getHandler(message.getType());
-            if (handler == null) {
-                this.send(responseFactory.systemNotification("Unsupported message type"));
-                return;
-            }
-            handler.handle(message, this);
+            BaseRequest request = serializer.deserialize(rawJson, BaseRequest.class);
+            messageRouter.route(request, this);
         } catch (BusinessException e) {
             serverBusinessErrorResolver.resolve(e, this);
         }

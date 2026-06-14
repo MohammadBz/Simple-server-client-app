@@ -1,13 +1,13 @@
 package controller.server.handler;
 
-import protocol.message.factory.ResponseFactory;
-import service.server.core.ClientConnection;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
-
+import protocol.response.factory.ResponseFactory;
+import protocol.request.DisconnectRequest;
+import service.server.core.ClientConnection;
 
 @Slf4j
-public class DisconnectHandler implements MessageHandler {
+public class DisconnectHandler implements RequestHandler<DisconnectRequest> {
     private final ResponseFactory responseFactory;
 
     public DisconnectHandler(ResponseFactory responseFactory) {
@@ -15,9 +15,13 @@ public class DisconnectHandler implements MessageHandler {
     }
 
     @Override
-    public void handle(Message message, ClientConnection clientConnection) {
+    public Class<DisconnectRequest> requestType() {
+        return DisconnectRequest.class;
+    }
 
-        log.info("Client with id  {}  is disconnecting...", clientConnection.getClientId());
+    @Override
+    public void handle(DisconnectRequest request, ClientConnection clientConnection) {
+        log.info("Client with id {} is disconnecting...", clientConnection.getClientId());
 
         Message response = responseFactory.disconnect();
 

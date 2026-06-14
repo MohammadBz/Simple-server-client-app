@@ -1,4 +1,4 @@
-package protocol.message.factory;
+package protocol.response.factory;
 
 import domain.chat.MessageStatus;
 import protocol.message.Message;

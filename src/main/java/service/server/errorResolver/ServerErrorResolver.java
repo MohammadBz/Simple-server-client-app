@@ -1,4 +1,4 @@
-package service.server.errorResolver;
+package service.server.errorresolver;
 
 import service.server.core.ClientConnection;
 

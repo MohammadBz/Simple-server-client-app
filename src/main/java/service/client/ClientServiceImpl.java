@@ -1,12 +1,11 @@
 package service.client;
 
 
-import protocol.dto.auth.SignupRequestDTO;
 import exception.technical.ConnectionException;
 import exception.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
-import protocol.message.Message;
-import protocol.message.factory.RequestFactory;
+import protocol.request.factory.RequestFactory;
+import protocol.request.BaseRequest;
 import service.common.validation.UserValidator;
 
 
@@ -30,7 +29,7 @@ public class ClientServiceImpl implements ClientService {
 
         UserValidator.validateCredentials(username, password);
 
-        Message message = requestFactory.login(username, password);
+        BaseRequest message = requestFactory.login(username, password);
 
         pendingLoginUsername = username;
         log.info("Sending login request for '{}'", username);
@@ -42,9 +41,7 @@ public class ClientServiceImpl implements ClientService {
 
         UserValidator.validateCredentials(username, password);
 
-        SignupRequestDTO dto = new SignupRequestDTO(username, password);
-
-        Message message = requestFactory.signup(username, password);
+        BaseRequest message = requestFactory.signup(username, password);
 
         log.info("Sending signup request for '{}'", username);
         client.send(message);
@@ -55,7 +52,7 @@ public class ClientServiceImpl implements ClientService {
 
         log.info("Sending message to '{}'", receiver);
 
-        Message message = requestFactory.sendMessage(session.getUsername(), receiver, content);
+        BaseRequest message = requestFactory.sendMessage(session.getUsername(), receiver, content);
 
         client.send(message);
     }
@@ -65,7 +62,7 @@ public class ClientServiceImpl implements ClientService {
 
         log.info("Requesting online users");
 
-        Message request = requestFactory.onlineUsersRequest(session.getUsername());
+        BaseRequest request = requestFactory.onlineUsersRequest(session.getUsername());
 
         client.send(request);
     }
@@ -73,7 +70,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public void disconnect() throws ConnectionException {
         log.info("Sending Disconnect request");
-        Message request = requestFactory.disconnectRequest();
+        BaseRequest request = requestFactory.disconnectRequest();
         client.send(request);
     }
 
@@ -82,7 +79,7 @@ public class ClientServiceImpl implements ClientService {
 
         log.info("Sending logout request for user {}", session.getUsername());
 
-        Message request = requestFactory.logoutRequest(session.getUsername());
+        BaseRequest request = requestFactory.logoutRequest(session.getUsername());
 
         client.send(request);
     }

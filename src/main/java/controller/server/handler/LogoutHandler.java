@@ -1,34 +1,38 @@
 package controller.server.handler;
 
-import protocol.message.factory.ResponseFactory;
-import service.server.core.ClientConnection;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
-
+import protocol.response.factory.ResponseFactory;
+import protocol.request.LogoutRequest;
+import service.server.core.ClientConnection;
 import service.server.core.SessionOperations;
 
 @Slf4j
-public class LogoutHandler implements MessageHandler {
+public class LogoutHandler implements RequestHandler<LogoutRequest> {
 
     private final SessionOperations sessionOperations;
     private final ResponseFactory responseFactory;
 
-    public LogoutHandler(SessionOperations serverManager, ResponseFactory responseFactory) {
-        this.sessionOperations = serverManager;
+    public LogoutHandler(SessionOperations sessionOperations, ResponseFactory responseFactory) {
+        this.sessionOperations = sessionOperations;
         this.responseFactory = responseFactory;
     }
 
     @Override
-    public void handle(Message message, ClientConnection Clientconnection) {
+    public Class<LogoutRequest> requestType() {
+        return LogoutRequest.class;
+    }
 
-        String username = message.getSender();
+    @Override
+    public void handle(LogoutRequest request, ClientConnection clientConnection) {
+        String username = request.getSender();
 
         log.info("Logging out user {}", username);
 
         sessionOperations.unregisterSession(username);
+        clientConnection.getSession().clear();
 
         Message response = responseFactory.logout();
-
-        Clientconnection.send(response);
+        clientConnection.send(response);
     }
 }

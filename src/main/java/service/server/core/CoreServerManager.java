@@ -1,8 +1,8 @@
 package service.server.core;
 
 import service.server.business.admin.AdminOperations;
-import service.server.business.messageRoute.RoutingService;
-import service.server.business.messageRoute.RoutingServiceImpl;
+import service.server.business.chatmessageroute.ChatMessageRouter;
+import service.server.business.chatmessageroute.ChatMessageRouterImpl;
 import service.server.session.SessionRegistry;
 import service.server.session.SessionRegistryImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -14,12 +14,12 @@ import java.util.List;
 public class CoreServerManager implements AdminOperations, MessageOperations, SessionOperations {
 
     private final SessionRegistry sessionRegistry;
-    private final RoutingService routingService;
+    private final ChatMessageRouter chatMessageRouter;
     private ShutdownCapable shutdownCapable;
 
     public CoreServerManager() {
         this.sessionRegistry = new SessionRegistryImpl();
-        this.routingService = new RoutingServiceImpl(sessionRegistry);
+        this.chatMessageRouter = new ChatMessageRouterImpl(sessionRegistry);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class CoreServerManager implements AdminOperations, MessageOperations, Se
 
     @Override
     public ChatMessage sendMessage(ChatMessage chatMessage) {
-        return routingService.route(chatMessage);
+        return chatMessageRouter.route(chatMessage);
     }
 
     public void setShutdownCapable(ShutdownCapable shutdownCapable) {

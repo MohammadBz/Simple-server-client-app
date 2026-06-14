@@ -2,9 +2,9 @@ package service.client;
 
 import infrastructure.serialization.Serializer;
 import launcher.client.event.ClientEventHandler;
-import protocol.message.Message;
 import exception.technical.ConnectionException;
 import lombok.extern.slf4j.Slf4j;
+import protocol.request.BaseRequest;
 
 @Slf4j
 public class SocketChatClient extends AbstractClient {
@@ -13,7 +13,7 @@ public class SocketChatClient extends AbstractClient {
     }
 
     @Override
-    public void send(Message message) throws ConnectionException {
+    public void send(BaseRequest message) throws ConnectionException {
         connectionManager.send(serializer.serialize(message));
     }
 
