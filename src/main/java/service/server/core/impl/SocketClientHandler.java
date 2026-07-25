@@ -54,9 +54,18 @@ public class SocketClientHandler extends AbstractClientConnection {
     private void processMessage(String rawJson) {
         try {
             BaseRequest request = marshaller.unmarshall(rawJson, BaseRequest.class);
+            validateRequest(request);
             messageRouter.route(request, this);
         } catch (BusinessException e) {
             serverBusinessErrorResolver.resolve(e, this);
+        }
+    }
+
+    private void validateRequest(BaseRequest request) {
+        if (request == null) {
+            this.send(responseFactory.systemNotification("Message format not recognized."));
+            log.warn("Request should not be empty client id: {}", this.getClientId());
+            return;
         }
     }
 

@@ -23,9 +23,11 @@ public class MessageRouter {
 
     private final Map<Class<? extends BaseRequest>, RequestHandler<? extends BaseRequest>> handlers = new HashMap<>();
     private final ResponseFactory responseFactory;
+    private final RouterValidator routerValidator;
 
     public MessageRouter(AuthService authService, CoreServerManager serverManager, ResponseFactory responseFactory) {
         this.responseFactory = responseFactory;
+        routerValidator = RouterValidator.INSTANCE;
         register(new LoginHandler(authService, serverManager, responseFactory));
         register(new SignupHandler(authService, responseFactory));
         register(new SendMessageHandler(serverManager, responseFactory));
@@ -35,18 +37,9 @@ public class MessageRouter {
     }
 
     public void route(BaseRequest request, ClientConnection clientConnection) throws BusinessException {
-        if (request == null) {
-            clientConnection.send(responseFactory.systemNotification("Message format not recognized."));
-            return;
-        }
 
         RequestHandler<? extends BaseRequest> handler = handlers.get(request.getClass());
-        if (handler == null) {
-            log.warn("No handler found for request type {}", request.getClass().getSimpleName());
-            clientConnection.send(responseFactory.systemNotification("Unsupported request type."));
-            return;
-        }
-
+        routerValidator.validateRouter(handler, request);
         dispatch(handler, request, clientConnection);
     }
 

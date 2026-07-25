@@ -110,6 +110,15 @@ public class ServerBusinessErrorResolver implements ServerErrorResolver {
         }
     }
 
+    public class RoutingValidationException implements ErrorAction {
+        @Override
+        public void execute(Exception e, ClientConnection client) {
+            String msg = e.getMessage() + " client id:" + client.getClientId();
+            log.warn(msg);
+            client.send(responseFactory.systemNotification("Unsupported request type."));
+        }
+    }
+
     private void sendDeliveryFailure(ClientConnection client, String message) {
         client.send(responseFactory.deliveryStatus(null, MessageStatus.FAILED, message));
     }
