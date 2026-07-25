@@ -22,11 +22,9 @@ import java.util.Map;
 public class MessageRouter {
 
     private final Map<Class<? extends BaseRequest>, RequestHandler<? extends BaseRequest>> handlers = new HashMap<>();
-    private final ResponseFactory responseFactory;
     private final RouterValidator routerValidator;
 
     public MessageRouter(AuthService authService, CoreServerManager serverManager, ResponseFactory responseFactory) {
-        this.responseFactory = responseFactory;
         routerValidator = RouterValidator.INSTANCE;
         register(new LoginHandler(authService, serverManager, responseFactory));
         register(new SignupHandler(authService, responseFactory));

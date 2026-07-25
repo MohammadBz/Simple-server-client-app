@@ -5,9 +5,7 @@ import exception.business.InvalidCredentialsException;
 import exception.business.MessageRoutingException;
 import exception.business.UnauthorizedException;
 import exception.business.UserDuplicateConflictException;
-import exception.validation.LoginValidationException;
-import exception.validation.MessageValidationException;
-import exception.validation.SignupValidationException;
+import exception.validation.*;
 import lombok.extern.slf4j.Slf4j;
 import protocol.response.factory.ResponseFactory;
 import protocol.response.ResponseMessages;
@@ -32,6 +30,8 @@ public class ServerBusinessErrorResolver implements ServerErrorResolver {
         register(UnauthorizedException.class, new UnauthorizedExceptionErrorAction());
         register(MessageValidationException.class, new MessageValidationExceptionErrorAction());
         register(MessageRoutingException.class, new MessageRoutingExceptionErrorAction());
+        register(RouterValidationException.class, new RoutingValidationExceptionErrorAction());
+        register(RequestValidationException.class, new RequestValidationExceptionErrorAction());
     }
 
     @Override
@@ -110,12 +110,20 @@ public class ServerBusinessErrorResolver implements ServerErrorResolver {
         }
     }
 
-    public class RoutingValidationException implements ErrorAction {
+    public class RoutingValidationExceptionErrorAction implements ErrorAction {
         @Override
         public void execute(Exception e, ClientConnection client) {
             String msg = e.getMessage() + " client id:" + client.getClientId();
             log.warn(msg);
             client.send(responseFactory.systemNotification("Unsupported request type."));
+        }
+    }
+
+    public class RequestValidationExceptionErrorAction implements ErrorAction {
+        @Override
+        public void execute(Exception e, ClientConnection client) {
+            log.warn(e.getMessage());
+            client.send(responseFactory.systemNotification("Message format not recognized."));
         }
     }
 

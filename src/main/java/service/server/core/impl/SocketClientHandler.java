@@ -2,6 +2,7 @@ package service.server.core.impl;
 
 import exception.base.BusinessException;
 import controller.server.router.MessageRouter;
+import exception.validation.RequestValidationException;
 import infrastructure.network.ConnectionManager;
 import service.server.errorresolver.ServerErrorResolver;
 import exception.technical.ConnectionException;
@@ -63,9 +64,7 @@ public class SocketClientHandler extends AbstractClientConnection {
 
     private void validateRequest(BaseRequest request) {
         if (request == null) {
-            this.send(responseFactory.systemNotification("Message format not recognized."));
-            log.warn("Request should not be empty client id: {}", this.getClientId());
-            return;
+            throw new RequestValidationException("Request should not be empty client id: " + this.clientId);
         }
     }
 
