@@ -61,10 +61,10 @@ public class ServerSystemErrorResolver implements ServerErrorResolver {
         @Override
         public void execute(Exception e, ClientConnection client) {
             if (client == null) {
-                log.error("Protocol Violation: Failed to serialize response. No client context available.");
+                log.error("Protocol Violation: Failed to marshall response. No client context available.");
                 return;
             }
-            log.error("Protocol Violation: Failed to serialize response for client {}", client.getClientId());
+            log.error("Protocol Violation: Failed to marshall response for client {}", client.getClientId());
             client.disconnect("Protocol error: Server failed to format message.");
         }
     }

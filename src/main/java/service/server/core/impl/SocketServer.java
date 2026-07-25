@@ -3,8 +3,8 @@ package service.server.core.impl;
 import controller.server.router.MessageRouter;
 import infrastructure.network.ConnectionManager;
 import infrastructure.network.SocketConnectionManager;
-import infrastructure.serialization.JacksonSerializer;
-import infrastructure.serialization.Serializer;
+import infrastructure.marshalling.JacksonMarshaller;
+import infrastructure.marshalling.Marshaller;
 import protocol.response.factory.ResponseFactory;
 import protocol.response.factory.ResponseFactoryImpl;
 import service.server.business.auth.AuthServiceImpl;
@@ -32,7 +32,7 @@ public class SocketServer extends AbstractServer {
     private final ConnectionRegistry connectionRegistry;
     private final ServerErrorResolver systemErrorResolver;
     private final ServerErrorResolver serverBusinessErrorResolver;
-    private final Serializer serializer;
+    private final Marshaller marshaller;
     private final ResponseFactory responseFactory;
 
     public SocketServer(int port, CoreServerManager serverManager) {
@@ -40,8 +40,8 @@ public class SocketServer extends AbstractServer {
         this.authService = new AuthServiceImpl();
         this.connectionManager = new SocketConnectionManager();
         this.serverManager = serverManager;
-        this.serializer = new JacksonSerializer();
-        this.responseFactory = new ResponseFactoryImpl(serializer);
+        this.marshaller = JacksonMarshaller.getInstance();
+        this.responseFactory = new ResponseFactoryImpl(marshaller);
         this.messageRouter = new MessageRouter(authService, serverManager, responseFactory);
         this.connectionRegistry = new ConnectionRegistryImpl();
         this.systemErrorResolver = new ServerSystemErrorResolver(responseFactory);
@@ -59,7 +59,7 @@ public class SocketServer extends AbstractServer {
 
             ConnectionManager connectionManager = new SocketConnectionManager(socket);
 
-            clientHandler = new SocketClientHandler(connectionManager, messageRouter, connectionRegistry, serverManager, responseFactory, serverBusinessErrorResolver, systemErrorResolver, serializer);
+            clientHandler = new SocketClientHandler(connectionManager, messageRouter, connectionRegistry, serverManager, responseFactory, serverBusinessErrorResolver, systemErrorResolver, marshaller);
             connectionRegistry.register(clientHandler);
 
             Thread thread = new Thread(clientHandler);

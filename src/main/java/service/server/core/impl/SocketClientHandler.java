@@ -11,7 +11,7 @@ import service.server.session.impl.Session;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
 import protocol.dto.chat.IncomingMessageDTO;
-import infrastructure.serialization.Serializer;
+import infrastructure.marshalling.Marshaller;
 import protocol.message.Message;
 import protocol.message.MessageType;
 import protocol.response.factory.ResponseFactory;
@@ -21,7 +21,7 @@ import protocol.request.BaseRequest;
 public class SocketClientHandler extends AbstractClientConnection {
 
     private final ConnectionManager connectionManager;
-    private final Serializer serializer;
+    private final Marshaller<String> marshaller;
     private final MessageRouter messageRouter;
     private final ConnectionRegistry connectionRegistry;
     private final CoreServerManager serverManager;
@@ -33,7 +33,7 @@ public class SocketClientHandler extends AbstractClientConnection {
     public SocketClientHandler(ConnectionManager connectionManager, MessageRouter messageRouter, ConnectionRegistry connectionRegistry,
                                CoreServerManager serverManager, ResponseFactory responseFactory,
                                ServerErrorResolver serverBusinessErrorResolver, ServerErrorResolver systemErrorResolver,
-                               Serializer serializer) {
+                               Marshaller<String> marshaller) {
         this.connectionManager = connectionManager;
         this.messageRouter = messageRouter;
         this.connectionRegistry = connectionRegistry;
@@ -41,7 +41,7 @@ public class SocketClientHandler extends AbstractClientConnection {
         this.responseFactory = responseFactory;
         this.serverBusinessErrorResolver = serverBusinessErrorResolver;
         this.serverSystemErrorResolver = systemErrorResolver;
-        this.serializer = serializer;
+        this.marshaller = marshaller;
         this.session = new Session();
     }
 
@@ -53,7 +53,7 @@ public class SocketClientHandler extends AbstractClientConnection {
 
     private void processMessage(String rawJson) {
         try {
-            BaseRequest request = serializer.deserialize(rawJson, BaseRequest.class);
+            BaseRequest request = marshaller.unmarshall(rawJson, BaseRequest.class);
             messageRouter.route(request, this);
         } catch (BusinessException e) {
             serverBusinessErrorResolver.resolve(e, this);
@@ -73,7 +73,7 @@ public class SocketClientHandler extends AbstractClientConnection {
     @Override
     public synchronized void send(Message message) {
         try {
-            connectionManager.send(serializer.serialize(message));
+            connectionManager.send(marshaller.marshall(message));
         } catch (ConnectionException e) {
             log.warn("Failed to send message to client: {} , {}", clientId, e.getMessage());
         }
@@ -84,7 +84,7 @@ public class SocketClientHandler extends AbstractClientConnection {
         try {
             IncomingMessageDTO dto = new IncomingMessageDTO(chatMessage.getSender(), chatMessage.getContent(), chatMessage.getTimestamp());
 
-            String payload = serializer.serialize(dto);
+            String payload = marshaller.marshall(dto);
             Message outgoing = new Message(MessageType.INCOMING_MESSAGE, "SERVER", payload);
 
             send(outgoing);

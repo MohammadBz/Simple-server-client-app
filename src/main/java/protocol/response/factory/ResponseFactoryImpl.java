@@ -1,6 +1,6 @@
 package protocol.response.factory;
 
-import infrastructure.serialization.Serializer;
+import infrastructure.marshalling.Marshaller;
 import protocol.response.ResponseDTO;
 import protocol.response.ResponseMessages;
 import protocol.message.Message;
@@ -14,11 +14,11 @@ import java.util.UUID;
 
 public final class ResponseFactoryImpl implements ResponseFactory {
 
-    private final Serializer serializer;
+    private final Marshaller<String> marshaller;
 
 
-    public ResponseFactoryImpl(Serializer serializer) {
-        this.serializer = serializer;
+    public ResponseFactoryImpl(Marshaller<String> marshaller) {
+        this.marshaller = marshaller;
     }
 
     @Override
@@ -46,7 +46,7 @@ public final class ResponseFactoryImpl implements ResponseFactory {
 
         DeliveryStatusDTO dto = new DeliveryStatusDTO(messageId, status, details);
 
-        return new Message(MessageType.DELIVERY_STATUS, "launcher", serializer.serialize(dto));
+        return new Message(MessageType.DELIVERY_STATUS, "launcher", marshaller.marshall(dto));
     }
 
     @Override
@@ -54,7 +54,7 @@ public final class ResponseFactoryImpl implements ResponseFactory {
 
         OnlineUsersResponseDTO dto = new OnlineUsersResponseDTO(users);
 
-        return new Message(MessageType.ONLINE_USERS_RESPONSE, "launcher", serializer.serialize(dto));
+        return new Message(MessageType.ONLINE_USERS_RESPONSE, "launcher", marshaller.marshall(dto));
     }
 
     @Override
@@ -74,6 +74,6 @@ public final class ResponseFactoryImpl implements ResponseFactory {
 
     private Message buildResponse(MessageType type, boolean success, String text) {
         ResponseDTO dto = new ResponseDTO(success, text);
-        return new Message(type, "launcher", serializer.serialize(dto));
+        return new Message(type, "launcher", marshaller.marshall(dto));
     }
 }

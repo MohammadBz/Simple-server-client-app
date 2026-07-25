@@ -2,7 +2,7 @@ package service.client.impl;
 
 import exception.technical.ConnectionException;
 import infrastructure.network.ConnectionManager;
-import infrastructure.serialization.Serializer;
+import infrastructure.marshalling.Marshaller;
 import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
 import launcher.client.event.ClientEventHandler;
@@ -10,13 +10,13 @@ import launcher.client.event.ClientEventHandler;
 @Slf4j
 public class SocketMessageListener extends AbstractMessageListener {
     private final ConnectionManager connectionManager;
-    private final Serializer serializer;
+    private final Marshaller<String> marshaller;
     private final ResponseDispatcher responseDispatcher;
     private final ClientEventHandler eventHandler;
 
-    public SocketMessageListener(ConnectionManager connectionManager, Serializer serializer, ResponseDispatcher responseDispatcher, ClientEventHandler eventHandler) {
+    public SocketMessageListener(ConnectionManager connectionManager, Marshaller marshaller, ResponseDispatcher responseDispatcher, ClientEventHandler eventHandler) {
         this.connectionManager = connectionManager;
-        this.serializer = serializer;
+        this.marshaller = marshaller;
         this.responseDispatcher = responseDispatcher;
         this.eventHandler = eventHandler;
     }
@@ -24,7 +24,7 @@ public class SocketMessageListener extends AbstractMessageListener {
     @Override
     protected void listenAndProcess() {
         String rawData = connectionManager.receive();
-        Message message = serializer.deserialize(rawData, Message.class);
+        Message message = marshaller.unmarshall(rawData, Message.class);
         log.debug("Received message: {}", message.getType());
         responseDispatcher.dispatch(message);
     }
