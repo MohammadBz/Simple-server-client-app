@@ -2,8 +2,7 @@ package ui.client;
 
 
 import controller.client.ClientController;
-import controller.client.SocketClientController;
-import service.client.ClientSession;
+import service.client.base.ClientSession;
 
 import exception.technical.ConnectionException;
 import lombok.extern.slf4j.Slf4j;

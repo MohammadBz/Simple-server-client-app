@@ -1,4 +1,4 @@
-package service.client;
+package service.client.impl;
 
 import exception.technical.ConnectionException;
 import infrastructure.network.ConnectionManager;

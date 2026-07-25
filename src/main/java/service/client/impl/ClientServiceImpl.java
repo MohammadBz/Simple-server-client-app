@@ -1,4 +1,4 @@
-package service.client;
+package service.client.impl;
 
 
 import exception.technical.ConnectionException;
@@ -6,6 +6,9 @@ import exception.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import protocol.request.factory.RequestFactory;
 import protocol.request.BaseRequest;
+import service.client.base.ChatClient;
+import service.client.base.ClientService;
+import service.client.base.ClientSession;
 import service.common.validation.UserValidator;
 
 

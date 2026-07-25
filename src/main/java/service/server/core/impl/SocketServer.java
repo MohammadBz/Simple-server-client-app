@@ -1,4 +1,4 @@
-package service.server.core;
+package service.server.core.impl;
 
 import controller.server.router.MessageRouter;
 import infrastructure.network.ConnectionManager;
@@ -9,8 +9,8 @@ import protocol.response.factory.ResponseFactory;
 import protocol.response.factory.ResponseFactoryImpl;
 import service.server.business.auth.AuthServiceImpl;
 import service.server.errorresolver.ServerErrorResolver;
-import service.server.session.ConnectionRegistry;
-import service.server.session.ConnectionRegistryImpl;
+import service.server.session.base.ConnectionRegistry;
+import service.server.session.impl.ConnectionRegistryImpl;
 import lombok.extern.slf4j.Slf4j;
 import service.server.errorresolver.ServerBusinessErrorResolver;
 import service.server.errorresolver.ServerSystemErrorResolver;

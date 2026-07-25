@@ -1,4 +1,4 @@
-package service.server.core;
+package service.server.core.base;
 
 import domain.chat.ChatMessage;
 

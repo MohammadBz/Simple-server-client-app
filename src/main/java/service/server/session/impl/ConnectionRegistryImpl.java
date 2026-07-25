@@ -1,8 +1,9 @@
-package service.server.session;
+package service.server.session.impl;
 
-import service.server.core.ClientConnection;
+import service.server.core.base.ClientConnection;
 import lombok.extern.slf4j.Slf4j;
 import protocol.response.ResponseMessages;
+import service.server.session.base.ConnectionRegistry;
 
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;

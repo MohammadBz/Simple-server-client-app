@@ -1,4 +1,4 @@
-package service.server.session;
+package service.server.session.impl;
 
 public class Session {
 

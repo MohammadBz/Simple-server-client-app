@@ -1,4 +1,4 @@
-package service.client;
+package service.client.impl;
 
 import infrastructure.serialization.Serializer;
 import launcher.client.event.ClientEventHandler;

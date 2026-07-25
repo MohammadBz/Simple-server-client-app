@@ -1,4 +1,4 @@
-package service.client;
+package service.client.base;
 
 public interface MessageListener {
     void start();

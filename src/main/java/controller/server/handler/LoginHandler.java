@@ -8,8 +8,8 @@ import protocol.response.factory.ResponseFactory;
 import protocol.request.LoginRequest;
 import service.common.validation.UserValidator;
 import service.server.business.auth.AuthService;
-import service.server.core.ClientConnection;
-import service.server.core.SessionOperations;
+import service.server.core.base.ClientConnection;
+import service.server.core.base.SessionOperations;
 
 @Slf4j
 public class LoginHandler implements RequestHandler<LoginRequest> {

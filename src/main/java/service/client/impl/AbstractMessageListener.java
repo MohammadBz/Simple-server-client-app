@@ -1,6 +1,7 @@
-package service.client;
+package service.client.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import service.client.base.MessageListener;
 
 @Slf4j
 public abstract class AbstractMessageListener implements MessageListener, Runnable {

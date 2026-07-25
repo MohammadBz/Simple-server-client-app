@@ -8,8 +8,8 @@ import protocol.response.factory.ResponseFactory;
 import protocol.request.SendMessageRequest;
 import protocol.response.ResponseMessages;
 import service.common.validation.MessageValidator;
-import service.server.core.ClientConnection;
-import service.server.core.MessageOperations;
+import service.server.core.base.ClientConnection;
+import service.server.core.base.MessageOperations;
 
 @Slf4j
 public class SendMessageHandler implements RequestHandler<SendMessageRequest> {

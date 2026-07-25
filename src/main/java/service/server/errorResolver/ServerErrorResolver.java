@@ -1,6 +1,6 @@
 package service.server.errorresolver;
 
-import service.server.core.ClientConnection;
+import service.server.core.base.ClientConnection;
 
 
 public interface ServerErrorResolver {

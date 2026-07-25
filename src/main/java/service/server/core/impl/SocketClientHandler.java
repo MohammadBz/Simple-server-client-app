@@ -1,4 +1,4 @@
-package service.server.core;
+package service.server.core.impl;
 
 import exception.base.BusinessException;
 import controller.server.router.MessageRouter;
@@ -6,8 +6,8 @@ import infrastructure.network.ConnectionManager;
 import service.server.errorresolver.ServerErrorResolver;
 import exception.technical.ConnectionException;
 import exception.business.MessageRoutingException;
-import service.server.session.ConnectionRegistry;
-import service.server.session.Session;
+import service.server.session.base.ConnectionRegistry;
+import service.server.session.impl.Session;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
 import protocol.dto.chat.IncomingMessageDTO;

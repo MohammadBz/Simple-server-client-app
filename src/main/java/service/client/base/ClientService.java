@@ -1,4 +1,4 @@
-package service.client;
+package service.client.base;
 
 import exception.technical.ConnectionException;
 import exception.validation.ValidationException;

@@ -4,7 +4,7 @@ import exception.business.UnauthorizedException;
 import protocol.response.factory.ResponseFactory;
 import protocol.request.OnlineUsersRequest;
 import service.server.business.admin.AdminOperations;
-import service.server.core.ClientConnection;
+import service.server.core.base.ClientConnection;
 
 import java.util.ArrayList;
 import java.util.List;

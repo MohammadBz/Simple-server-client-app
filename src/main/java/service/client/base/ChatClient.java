@@ -1,4 +1,4 @@
-package service.client;
+package service.client.base;
 
 import protocol.request.BaseRequest;
 

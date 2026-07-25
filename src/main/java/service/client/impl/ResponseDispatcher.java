@@ -1,4 +1,4 @@
-package service.client;
+package service.client.impl;
 
 import protocol.dto.chat.DeliveryStatusDTO;
 import protocol.dto.chat.OnlineUsersResponseDTO;
@@ -9,8 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import protocol.message.MessageType;
 import protocol.response.ResponseDTO;
 import protocol.dto.chat.IncomingMessageDTO;
+import service.client.base.ResponseProcessor;
 
-import java.beans.EventHandler;
 import java.util.EnumMap;
 import java.util.Map;
 

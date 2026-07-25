@@ -1,10 +1,14 @@
-package service.server.core;
+package service.server.core.impl;
 
 import service.server.business.admin.AdminOperations;
 import service.server.business.chatmessageroute.ChatMessageRouter;
 import service.server.business.chatmessageroute.ChatMessageRouterImpl;
-import service.server.session.SessionRegistry;
-import service.server.session.SessionRegistryImpl;
+import service.server.core.base.ClientConnection;
+import service.server.core.base.MessageOperations;
+import service.server.core.base.SessionOperations;
+import service.server.core.base.ShutdownCapable;
+import service.server.session.base.SessionRegistry;
+import service.server.session.impl.SessionRegistryImpl;
 import lombok.extern.slf4j.Slf4j;
 import domain.chat.ChatMessage;
 

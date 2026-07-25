@@ -12,8 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import protocol.response.factory.ResponseFactory;
 import protocol.request.BaseRequest;
 import service.server.business.auth.AuthService;
-import service.server.core.ClientConnection;
-import service.server.core.CoreServerManager;
+import service.server.core.base.ClientConnection;
+import service.server.core.impl.CoreServerManager;
 
 import java.util.HashMap;
 import java.util.Map;

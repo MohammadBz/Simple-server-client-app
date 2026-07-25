@@ -8,7 +8,7 @@ import protocol.response.factory.ResponseFactory;
 import protocol.request.SignupRequest;
 import service.common.validation.UserValidator;
 import service.server.business.auth.AuthService;
-import service.server.core.ClientConnection;
+import service.server.core.base.ClientConnection;
 
 @Slf4j
 public class  SignupHandler implements RequestHandler<SignupRequest> {

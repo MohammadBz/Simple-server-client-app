@@ -1,4 +1,4 @@
-package service.server.core;
+package service.server.core.base;
 
 public interface Server {
     void start();

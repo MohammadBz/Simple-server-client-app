@@ -1,9 +1,11 @@
-package service.client;
+package service.client.impl;
 
 import infrastructure.network.ConnectionManager;
 import infrastructure.network.SocketConnectionManager;
 import infrastructure.serialization.Serializer;
 import launcher.client.event.ClientEventHandler;
+import service.client.base.ChatClient;
+import service.client.base.MessageListener;
 
 public abstract class AbstractClient implements ChatClient {
     protected final ConnectionManager connectionManager;

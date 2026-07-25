@@ -4,8 +4,8 @@ import domain.chat.ChatMessage;
 import domain.chat.MessageStatus;
 import exception.business.MessageRoutingException;
 import lombok.extern.slf4j.Slf4j;
-import service.server.core.ClientConnection;
-import service.server.session.SessionRegistry;
+import service.server.core.base.ClientConnection;
+import service.server.session.base.SessionRegistry;
 
 @Slf4j
 public class ChatMessageRouterImpl implements ChatMessageRouter {

@@ -1,7 +1,7 @@
 package controller.client;
 
-import service.client.ClientService;
-import service.client.ClientSession;
+import service.client.base.ClientService;
+import service.client.base.ClientSession;
 import launcher.client.event.ClientEventHandler;
 import domain.chat.MessageStatus;
 import lombok.extern.slf4j.Slf4j;

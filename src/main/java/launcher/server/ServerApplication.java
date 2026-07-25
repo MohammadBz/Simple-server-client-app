@@ -1,13 +1,13 @@
 package launcher.server;
 
 import controller.admin.AdminController;
-import service.server.core.AbstractServer;
-import service.server.core.SocketServer;
+import service.server.core.impl.AbstractServer;
+import service.server.core.impl.SocketServer;
 import lombok.extern.slf4j.Slf4j;
 import ui.admin.AdminConsole;
 import controller.admin.StandardAdminController;
 import service.server.business.admin.AdminServiceImpl;
-import service.server.core.CoreServerManager;
+import service.server.core.impl.CoreServerManager;
 
 @Slf4j
 public class ServerApplication {

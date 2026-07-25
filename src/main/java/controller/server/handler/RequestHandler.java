@@ -2,7 +2,7 @@ package controller.server.handler;
 
 import exception.base.BusinessException;
 import protocol.request.BaseRequest;
-import service.server.core.ClientConnection;
+import service.server.core.base.ClientConnection;
 
 public interface RequestHandler<T extends BaseRequest> {
     Class<T> requestType();

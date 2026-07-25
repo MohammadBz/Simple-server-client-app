@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
 import protocol.response.factory.ResponseFactory;
 import protocol.request.DisconnectRequest;
-import service.server.core.ClientConnection;
+import service.server.core.base.ClientConnection;
 
 @Slf4j
 public class DisconnectHandler implements RequestHandler<DisconnectRequest> {

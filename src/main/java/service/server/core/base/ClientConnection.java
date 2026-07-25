@@ -1,8 +1,8 @@
-package service.server.core;
+package service.server.core.base;
 
 import domain.chat.ChatMessage;
 import protocol.message.Message;
-import service.server.session.Session;
+import service.server.session.impl.Session;
 
 public interface ClientConnection {
     public void send(Message message);

@@ -1,6 +1,7 @@
-package service.server.core;
+package service.server.core.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import service.server.core.base.ClientConnection;
 
 import java.util.UUID;
 

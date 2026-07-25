@@ -5,7 +5,7 @@ import exception.technical.JsonDeserializationException;
 import exception.technical.JsonSerializationException;
 import lombok.extern.slf4j.Slf4j;
 import protocol.response.factory.ResponseFactory;
-import service.server.core.ClientConnection;
+import service.server.core.base.ClientConnection;
 
 import java.io.IOException;
 import java.net.SocketException;

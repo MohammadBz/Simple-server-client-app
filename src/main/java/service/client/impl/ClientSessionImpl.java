@@ -1,6 +1,7 @@
-package service.client;
+package service.client.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import service.client.base.ClientSession;
 
 @Slf4j
 public class ClientSessionImpl implements ClientSession {

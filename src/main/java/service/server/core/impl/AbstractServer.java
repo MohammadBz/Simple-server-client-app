@@ -1,6 +1,8 @@
-package service.server.core;
+package service.server.core.impl;
 
 import lombok.extern.slf4j.Slf4j;
+import service.server.core.base.Server;
+import service.server.core.base.ShutdownCapable;
 
 import java.io.IOException;
 
