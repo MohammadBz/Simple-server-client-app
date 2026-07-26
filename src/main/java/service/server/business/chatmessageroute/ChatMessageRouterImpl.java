@@ -6,14 +6,14 @@ import exception.business.MessageRoutingException;
 import lombok.extern.slf4j.Slf4j;
 import service.server.core.base.ClientConnection;
 import service.server.session.base.SessionRegistry;
+import service.server.session.impl.SessionRegistryImpl;
 
 @Slf4j
-public class ChatMessageRouterImpl implements ChatMessageRouter {
+public enum ChatMessageRouterImpl implements ChatMessageRouter {
+    INSTANCE;
+    private final SessionRegistry sessionRegistry = SessionRegistryImpl.INSTANCE;
 
-    private final SessionRegistry sessionRegistry;
-
-    public ChatMessageRouterImpl(SessionRegistry sessionRegistry) {
-        this.sessionRegistry = sessionRegistry;
+    private ChatMessageRouterImpl() {
     }
 
     @Override

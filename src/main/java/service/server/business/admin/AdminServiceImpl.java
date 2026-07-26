@@ -2,17 +2,17 @@ package service.server.business.admin;
 
 import lombok.extern.slf4j.Slf4j;
 import protocol.dto.admin.OnlineUserDTO;
+import service.server.core.impl.CoreServerManager;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
-public class AdminServiceImpl implements AdminService {
+public enum AdminServiceImpl implements AdminService {
+    INSTANCE;
+    private final AdminOperations adminOperations = CoreServerManager.INSTANCE;
 
-    private final AdminOperations adminOperations;
-
-    public AdminServiceImpl(AdminOperations adminOperations) {
-        this.adminOperations = adminOperations;
+    private AdminServiceImpl() {
     }
 
     @Override

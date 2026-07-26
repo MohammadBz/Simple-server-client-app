@@ -25,10 +25,6 @@ public class SocketServer extends AbstractServer {
     private final int port;
     private ServerSocket serverSocket;
 
-    private final AuthServiceImpl authService;
-    private final MessageRouter messageRouter;
-    private final ConnectionManager connectionManager;
-    private final CoreServerManager serverManager;
     private final ConnectionRegistry connectionRegistry;
     private final ServerErrorResolver systemErrorResolver;
     private final ServerErrorResolver serverBusinessErrorResolver;
@@ -37,16 +33,14 @@ public class SocketServer extends AbstractServer {
 
     public SocketServer(int port, CoreServerManager serverManager) {
         this.port = port;
-        this.authService = new AuthServiceImpl();
-        this.connectionManager = new SocketConnectionManager();
-        this.serverManager = serverManager;
         this.marshaller = JacksonMarshaller.getInstance();
         this.responseFactory = ResponseFactoryImpl.INSTANCE;
         responseFactory.setMarshaller(marshaller);
-        this.messageRouter = new MessageRouter(authService, serverManager, responseFactory);
         this.connectionRegistry = new ConnectionRegistryImpl();
-        this.systemErrorResolver = new ServerSystemErrorResolver(responseFactory);
-        this.serverBusinessErrorResolver = new ServerBusinessErrorResolver(responseFactory);
+        this.systemErrorResolver = ServerSystemErrorResolver.INSTANCE;
+        systemErrorResolver.setResponseFactory(responseFactory);
+        this.serverBusinessErrorResolver = ServerBusinessErrorResolver.INSTANCE;
+        serverBusinessErrorResolver.setResponseFactory(responseFactory);
 
     }
 
@@ -60,7 +54,7 @@ public class SocketServer extends AbstractServer {
 
             ConnectionManager connectionManager = new SocketConnectionManager(socket);
 
-            clientHandler = new SocketClientHandler(connectionManager, messageRouter, connectionRegistry, serverManager, responseFactory, serverBusinessErrorResolver, systemErrorResolver, marshaller);
+            clientHandler = new SocketClientHandler(connectionManager, connectionRegistry, responseFactory, serverBusinessErrorResolver, systemErrorResolver, marshaller);
             connectionRegistry.register(clientHandler);
 
             Thread thread = new Thread(clientHandler);

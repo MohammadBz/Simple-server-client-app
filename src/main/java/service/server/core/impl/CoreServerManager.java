@@ -15,15 +15,13 @@ import domain.chat.ChatMessage;
 import java.util.List;
 
 @Slf4j
-public class CoreServerManager implements AdminOperations, MessageOperations, SessionOperations {
-
-    private final SessionRegistry sessionRegistry;
-    private final ChatMessageRouter chatMessageRouter;
+public enum CoreServerManager implements AdminOperations, MessageOperations, SessionOperations {
+    INSTANCE;
+    private static final SessionRegistry sessionRegistry = SessionRegistryImpl.INSTANCE;
+    private static final ChatMessageRouter chatMessageRouter = ChatMessageRouterImpl.INSTANCE;
     private ShutdownCapable shutdownCapable;
 
-    public CoreServerManager() {
-        this.sessionRegistry = new SessionRegistryImpl();
-        this.chatMessageRouter = new ChatMessageRouterImpl(sessionRegistry);
+    private CoreServerManager() {
     }
 
     @Override

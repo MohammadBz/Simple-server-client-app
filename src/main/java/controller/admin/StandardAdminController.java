@@ -3,16 +3,16 @@ package controller.admin;
 import lombok.extern.slf4j.Slf4j;
 import service.server.business.admin.AdminService;
 import protocol.dto.admin.OnlineUserDTO;
+import service.server.business.admin.AdminServiceImpl;
 
 import java.util.List;
 
 @Slf4j
-public class StandardAdminController implements AdminController {
+public enum StandardAdminController implements AdminController {
+    INSTANCE;
+    private static final AdminService adminService = AdminServiceImpl.INSTANCE;
 
-    private final AdminService adminService;
-
-    public StandardAdminController(AdminService adminService) {
-        this.adminService = adminService;
+    private StandardAdminController() {
     }
 
     @Override

@@ -11,7 +11,9 @@ import exception.base.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import protocol.response.factory.ResponseFactory;
 import protocol.request.BaseRequest;
+import protocol.response.factory.ResponseFactoryImpl;
 import service.server.business.auth.AuthService;
+import service.server.business.auth.AuthServiceImpl;
 import service.server.core.base.ClientConnection;
 import service.server.core.impl.CoreServerManager;
 
@@ -19,19 +21,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class MessageRouter {
-
+public enum MessageRouter {
+    INSTANCE;
+    private final RouterValidator routerValidator = RouterValidator.INSTANCE;
     private final Map<Class<? extends BaseRequest>, RequestHandler<? extends BaseRequest>> handlers = new HashMap<>();
-    private final RouterValidator routerValidator;
 
-    public MessageRouter(AuthService authService, CoreServerManager serverManager, ResponseFactory responseFactory) {
-        routerValidator = RouterValidator.INSTANCE;
-        register(new LoginHandler(authService, serverManager, responseFactory));
-        register(new SignupHandler(authService, responseFactory));
-        register(new SendMessageHandler(serverManager, responseFactory));
-        register(new OnlineUsersHandler(serverManager, responseFactory));
-        register(new DisconnectHandler(responseFactory));
-        register(new LogoutHandler(serverManager, responseFactory));
+
+    private MessageRouter() {
+        register(new LoginHandler(AuthServiceImpl.INSTANCE, CoreServerManager.INSTANCE, ResponseFactoryImpl.INSTANCE));
+        register(new SignupHandler(AuthServiceImpl.INSTANCE, ResponseFactoryImpl.INSTANCE));
+        register(new SendMessageHandler(CoreServerManager.INSTANCE, ResponseFactoryImpl.INSTANCE));
+        register(new OnlineUsersHandler(CoreServerManager.INSTANCE, ResponseFactoryImpl.INSTANCE));
+        register(new DisconnectHandler(ResponseFactoryImpl.INSTANCE));
+        register(new LogoutHandler(CoreServerManager.INSTANCE, ResponseFactoryImpl.INSTANCE));
     }
 
     public void route(BaseRequest request, ClientConnection clientConnection) throws BusinessException {

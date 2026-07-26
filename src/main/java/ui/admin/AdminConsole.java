@@ -2,6 +2,7 @@ package ui.admin;
 
 import controller.admin.AdminCommand;
 import controller.admin.AdminController;
+import controller.admin.StandardAdminController;
 import lombok.extern.slf4j.Slf4j;
 import protocol.dto.admin.OnlineUserDTO;
 
@@ -9,13 +10,12 @@ import java.util.List;
 import java.util.Scanner;
 
 @Slf4j
-public class AdminConsole implements Runnable {
+public enum AdminConsole implements Runnable {
+    INSTANCE;
+    private static final AdminController controller = StandardAdminController.INSTANCE;
+    private static final Scanner scanner = new Scanner(System.in);
 
-    private final AdminController controller;
-    private final Scanner scanner = new Scanner(System.in);
-
-    public AdminConsole(AdminController controller) {
-        this.controller = controller;
+    private AdminConsole() {
     }
 
     @Override

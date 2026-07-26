@@ -31,14 +31,14 @@ public class SocketClientHandler extends AbstractClientConnection {
     private final ServerErrorResolver serverSystemErrorResolver;
     private final Session session;
 
-    public SocketClientHandler(ConnectionManager connectionManager, MessageRouter messageRouter, ConnectionRegistry connectionRegistry,
-                               CoreServerManager serverManager, ResponseFactory responseFactory,
+    public SocketClientHandler(ConnectionManager connectionManager, ConnectionRegistry connectionRegistry,
+                                ResponseFactory responseFactory,
                                ServerErrorResolver serverBusinessErrorResolver, ServerErrorResolver systemErrorResolver,
                                Marshaller<String> marshaller) {
         this.connectionManager = connectionManager;
-        this.messageRouter = messageRouter;
+        this.messageRouter = MessageRouter.INSTANCE;
         this.connectionRegistry = connectionRegistry;
-        this.serverManager = serverManager;
+        this.serverManager = CoreServerManager.INSTANCE;
         this.responseFactory = responseFactory;
         this.serverBusinessErrorResolver = serverBusinessErrorResolver;
         this.serverSystemErrorResolver = systemErrorResolver;

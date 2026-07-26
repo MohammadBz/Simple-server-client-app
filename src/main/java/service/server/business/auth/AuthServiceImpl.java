@@ -6,18 +6,21 @@ import exception.business.UserDuplicateConflictException;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class AuthServiceImpl implements AuthService {
-
+public enum AuthServiceImpl implements AuthService {
+    INSTANCE;
     private final ConcurrentHashMap<String, User> users = new ConcurrentHashMap<>();
 
+    private AuthServiceImpl() {
+    }
+
     @Override
+
     public void signup(String username, String password) {
         User newUser = new User(username, password);
 
-        if (userExists(username)) {
+        if (users.putIfAbsent(username, newUser) != null) {
             throw new UserDuplicateConflictException("User already exists", username);
         }
-        users.put(username, newUser);
     }
 
     @Override
@@ -26,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
         if (!userExists(username)) {
             throw new InvalidCredentialsException("User not found", username);
         }
-        if (userExists(username) && !user.getPassword().equals(password)) {
+        if (!user.getPassword().equals(password)) {
             throw new InvalidCredentialsException("Invalid credentials", username);
         }
     }

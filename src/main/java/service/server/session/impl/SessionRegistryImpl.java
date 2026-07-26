@@ -9,9 +9,12 @@ import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Slf4j
-public class SessionRegistryImpl implements SessionRegistry {
-
+public enum SessionRegistryImpl implements SessionRegistry {
+    INSTANCE;
     private final ConcurrentHashMap<String, ClientConnection> activeSessions = new ConcurrentHashMap<>();
+
+    private SessionRegistryImpl() {
+    }
 
     @Override
     public void register(String username, ClientConnection connection) {
