@@ -5,6 +5,7 @@ import exception.technical.JsonDeserializationException;
 import exception.technical.JsonSerializationException;
 import lombok.extern.slf4j.Slf4j;
 import protocol.response.factory.ResponseFactory;
+import protocol.response.factory.ResponseFactoryImpl;
 import service.server.core.base.ClientConnection;
 
 import java.io.IOException;
@@ -13,18 +14,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class ServerSystemErrorResolver implements ServerErrorResolver {
+public enum ServerSystemErrorResolver implements ServerErrorResolver {
+    INSTANCE;
     private final Map<Class<? extends Exception>, ErrorAction> registry = new HashMap<>();
-    private final ResponseFactory responseFactory;
+    private final ResponseFactory responseFactory = ResponseFactoryImpl.INSTANCE;
 
-    public ServerSystemErrorResolver(ResponseFactory responseFactory) {
-        this.responseFactory = responseFactory;
+    private ServerSystemErrorResolver() {
         register(ConnectionException.class, new ConnectionErrorAction());
         register(JsonSerializationException.class, new JsonSerializationErrorAction());
         register(JsonDeserializationException.class, new JsonDeserializationErrorAction());
         register(SocketException.class, new SocketExceptionErrorAction());
         register(IOException.class, new IOExceptionErrorAction());
     }
+
 
     @Override
     public void resolve(Exception e, ClientConnection client) {

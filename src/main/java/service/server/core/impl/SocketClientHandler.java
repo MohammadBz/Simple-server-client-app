@@ -3,10 +3,14 @@ package service.server.core.impl;
 import exception.base.BusinessException;
 import controller.server.router.MessageRouter;
 import exception.validation.RequestValidationException;
+import infrastructure.marshalling.MarshallerStrategy;
 import infrastructure.network.ConnectionManager;
+import protocol.response.factory.ResponseFactoryImpl;
+import service.server.errorresolver.ServerBusinessErrorResolver;
 import service.server.errorresolver.ServerErrorResolver;
 import exception.technical.ConnectionException;
 import exception.business.MessageRoutingException;
+import service.server.errorresolver.ServerSystemErrorResolver;
 import service.server.session.base.ConnectionRegistry;
 import service.server.session.impl.Session;
 import lombok.extern.slf4j.Slf4j;
@@ -22,27 +26,18 @@ import protocol.request.BaseRequest;
 public class SocketClientHandler extends AbstractClientConnection {
 
     private final ConnectionManager connectionManager;
-    private final Marshaller<String> marshaller;
-    private final MessageRouter messageRouter;
+    private final Marshaller<String> marshaller = MarshallerStrategy.getMarshaller();
+    private final MessageRouter messageRouter = MessageRouter.INSTANCE;
     private final ConnectionRegistry connectionRegistry;
-    private final CoreServerManager serverManager;
-    private final ResponseFactory responseFactory;
-    private final ServerErrorResolver serverBusinessErrorResolver;
-    private final ServerErrorResolver serverSystemErrorResolver;
+    private final CoreServerManager serverManager = CoreServerManager.INSTANCE;
+    private final ResponseFactory responseFactory = ResponseFactoryImpl.INSTANCE;
+    private final ServerErrorResolver serverBusinessErrorResolver = ServerBusinessErrorResolver.INSTANCE;
+    private final ServerErrorResolver serverSystemErrorResolver = ServerSystemErrorResolver.INSTANCE;
     private final Session session;
 
-    public SocketClientHandler(ConnectionManager connectionManager, ConnectionRegistry connectionRegistry,
-                                ResponseFactory responseFactory,
-                               ServerErrorResolver serverBusinessErrorResolver, ServerErrorResolver systemErrorResolver,
-                               Marshaller<String> marshaller) {
+    public SocketClientHandler(ConnectionManager connectionManager, ConnectionRegistry connectionRegistry) {
         this.connectionManager = connectionManager;
-        this.messageRouter = MessageRouter.INSTANCE;
         this.connectionRegistry = connectionRegistry;
-        this.serverManager = CoreServerManager.INSTANCE;
-        this.responseFactory = responseFactory;
-        this.serverBusinessErrorResolver = serverBusinessErrorResolver;
-        this.serverSystemErrorResolver = systemErrorResolver;
-        this.marshaller = marshaller;
         this.session = new Session();
     }
 

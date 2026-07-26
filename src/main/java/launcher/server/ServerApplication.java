@@ -15,7 +15,7 @@ public class ServerApplication {
 
         CoreServerManager serverManager = CoreServerManager.INSTANCE;
 
-        this.server = new SocketServer(port, CoreServerManager.INSTANCE);
+        this.server = new SocketServer(port);
 
         serverManager.setShutdownCapable(server);
     }

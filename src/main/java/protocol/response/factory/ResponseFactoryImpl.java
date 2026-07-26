@@ -1,6 +1,7 @@
 package protocol.response.factory;
 
 import infrastructure.marshalling.Marshaller;
+import infrastructure.marshalling.MarshallerStrategy;
 import protocol.response.ResponseDTO;
 import protocol.response.ResponseMessages;
 import protocol.message.Message;
@@ -14,15 +15,11 @@ import java.util.UUID;
 
 public enum ResponseFactoryImpl implements ResponseFactory {
     INSTANCE;
-    private Marshaller<String> marshaller;
+    private final Marshaller<String> marshaller = MarshallerStrategy.getMarshaller();
 
     private ResponseFactoryImpl() {
     }
 
-    @Override
-    public void setMarshaller(Marshaller<String> marshaller) {
-        this.marshaller = marshaller;
-    }
 
     @Override
     public Message loginSuccess() {

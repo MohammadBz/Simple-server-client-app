@@ -26,6 +26,4 @@ public interface ResponseFactory {
 
     Message systemNotification(String text);
 
-    public void setMarshaller(Marshaller<String> marshaller);
-
 }

@@ -9,6 +9,7 @@ import exception.validation.*;
 import lombok.extern.slf4j.Slf4j;
 import protocol.response.factory.ResponseFactory;
 import protocol.response.ResponseMessages;
+import protocol.response.factory.ResponseFactoryImpl;
 import service.server.core.base.ClientConnection;
 
 import java.util.Map;
@@ -17,12 +18,12 @@ import java.util.Map;
 import java.util.HashMap;
 
 @Slf4j
-public class ServerBusinessErrorResolver implements ServerErrorResolver {
+public enum ServerBusinessErrorResolver implements ServerErrorResolver {
+    INSTANCE;
     private final Map<Class<? extends Exception>, ErrorAction> registry = new HashMap<>();
-    private final ResponseFactory responseFactory;
+    private final ResponseFactory responseFactory = ResponseFactoryImpl.INSTANCE;
 
-    public ServerBusinessErrorResolver(ResponseFactory responseFactory) {
-        this.responseFactory = responseFactory;
+    private ServerBusinessErrorResolver() {
         register(LoginValidationException.class, new LoginValidationExceptionErrorAction());
         register(SignupValidationException.class, new SignupValidationExceptionErrorAction());
         register(InvalidCredentialsException.class, new InvalidCredentialsExceptionErrorAction());
