@@ -32,7 +32,7 @@ public class SocketServer extends AbstractServer {
     private final ConnectionRegistry connectionRegistry;
     private final ServerErrorResolver systemErrorResolver;
     private final ServerErrorResolver serverBusinessErrorResolver;
-    private final Marshaller marshaller;
+    private final Marshaller<String> marshaller;
     private final ResponseFactory responseFactory;
 
     public SocketServer(int port, CoreServerManager serverManager) {
@@ -41,7 +41,8 @@ public class SocketServer extends AbstractServer {
         this.connectionManager = new SocketConnectionManager();
         this.serverManager = serverManager;
         this.marshaller = JacksonMarshaller.getInstance();
-        this.responseFactory = new ResponseFactoryImpl(marshaller);
+        this.responseFactory = ResponseFactoryImpl.INSTANCE;
+        responseFactory.setMarshaller(marshaller);
         this.messageRouter = new MessageRouter(authService, serverManager, responseFactory);
         this.connectionRegistry = new ConnectionRegistryImpl();
         this.systemErrorResolver = new ServerSystemErrorResolver(responseFactory);

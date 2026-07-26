@@ -30,7 +30,7 @@ public class ClientApplication {
         this.ui = new ConsoleUI(session);
         this.marshaller = JacksonMarshaller.getInstance();
         this.client = new SocketChatClient(null, marshaller);
-        this.requestFactory = new RequestFactoryImpl();
+        this.requestFactory = RequestFactoryImpl.INSTANCE;
         this.service = new ClientServiceImpl(client, session, requestFactory);
 
         this.controller = new SocketClientController(service, session, ui);

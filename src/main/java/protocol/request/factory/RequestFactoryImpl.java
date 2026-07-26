@@ -10,7 +10,11 @@ import protocol.request.SignupRequest;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public final class RequestFactoryImpl implements RequestFactory {
+public enum RequestFactoryImpl implements RequestFactory {
+    INSTANCE;
+
+    private RequestFactoryImpl() {
+    }
 
     public BaseRequest login(String username, String password) {
         log.debug("Creating LOGIN_REQUEST message for user: {}", username);
@@ -27,7 +31,6 @@ public final class RequestFactoryImpl implements RequestFactory {
         return new SendMessageRequest(sender, receiver, content);
 
     }
-
 
     public BaseRequest onlineUsersRequest(String requester) {
         log.debug("Creating ONLINE_USERS_REQUEST for requester: {}", requester);

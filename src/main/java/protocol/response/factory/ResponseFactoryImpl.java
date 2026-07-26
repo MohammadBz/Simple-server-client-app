@@ -12,12 +12,15 @@ import protocol.dto.chat.OnlineUsersResponseDTO;
 import java.util.List;
 import java.util.UUID;
 
-public final class ResponseFactoryImpl implements ResponseFactory {
+public enum ResponseFactoryImpl implements ResponseFactory {
+    INSTANCE;
+    private Marshaller<String> marshaller;
 
-    private final Marshaller<String> marshaller;
+    private ResponseFactoryImpl() {
+    }
 
-
-    public ResponseFactoryImpl(Marshaller<String> marshaller) {
+    @Override
+    public void setMarshaller(Marshaller<String> marshaller) {
         this.marshaller = marshaller;
     }
 
