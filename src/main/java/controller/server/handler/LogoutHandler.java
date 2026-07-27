@@ -4,18 +4,18 @@ import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
 import protocol.response.factory.ResponseFactory;
 import protocol.request.LogoutRequest;
+import protocol.response.factory.ResponseFactoryImpl;
 import service.server.core.base.ClientConnection;
 import service.server.core.base.SessionOperations;
+import service.server.core.impl.CoreServerManager;
 
 @Slf4j
-public class LogoutHandler implements RequestHandler<LogoutRequest> {
+public enum LogoutHandler implements RequestHandler<LogoutRequest> {
+    INSTANCE;
+    private final SessionOperations sessionOperations = CoreServerManager.INSTANCE;
+    private final ResponseFactory responseFactory = ResponseFactoryImpl.INSTANCE;
 
-    private final SessionOperations sessionOperations;
-    private final ResponseFactory responseFactory;
-
-    public LogoutHandler(SessionOperations sessionOperations, ResponseFactory responseFactory) {
-        this.sessionOperations = sessionOperations;
-        this.responseFactory = responseFactory;
+    private LogoutHandler() {
     }
 
     @Override

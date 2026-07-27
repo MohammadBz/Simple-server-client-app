@@ -7,19 +7,19 @@ import protocol.message.Message;
 import protocol.response.factory.ResponseFactory;
 import protocol.request.SendMessageRequest;
 import protocol.response.ResponseMessages;
+import protocol.response.factory.ResponseFactoryImpl;
 import service.common.validation.MessageValidator;
 import service.server.core.base.ClientConnection;
 import service.server.core.base.MessageOperations;
+import service.server.core.impl.CoreServerManager;
 
 @Slf4j
-public class SendMessageHandler implements RequestHandler<SendMessageRequest> {
+public enum SendMessageHandler implements RequestHandler<SendMessageRequest> {
+    INSTANCE;
+    private final MessageOperations messageOperations = CoreServerManager.INSTANCE;
+    private final ResponseFactory responseFactory = ResponseFactoryImpl.INSTANCE;
 
-    private final MessageOperations messageOperations;
-    private final ResponseFactory responseFactory;
-
-    public SendMessageHandler(MessageOperations messageOperations, ResponseFactory responseFactory) {
-        this.messageOperations = messageOperations;
-        this.responseFactory = responseFactory;
+    private SendMessageHandler() {
     }
 
     @Override

@@ -1,6 +1,7 @@
 package service.client.impl;
 
 import exception.technical.ConnectionException;
+import infrastructure.marshalling.MarshallerStrategy;
 import infrastructure.network.ConnectionManager;
 import infrastructure.marshalling.Marshaller;
 import lombok.extern.slf4j.Slf4j;
@@ -10,13 +11,12 @@ import launcher.client.event.ClientEventHandler;
 @Slf4j
 public class SocketMessageListener extends AbstractMessageListener {
     private final ConnectionManager connectionManager;
-    private final Marshaller<String> marshaller;
+    private final Marshaller<String> marshaller = MarshallerStrategy.getMarshaller();
     private final ResponseDispatcher responseDispatcher;
     private final ClientEventHandler eventHandler;
 
-    public SocketMessageListener(ConnectionManager connectionManager, Marshaller marshaller, ResponseDispatcher responseDispatcher, ClientEventHandler eventHandler) {
+    public SocketMessageListener(ConnectionManager connectionManager, ResponseDispatcher responseDispatcher, ClientEventHandler eventHandler) {
         this.connectionManager = connectionManager;
-        this.marshaller = marshaller;
         this.responseDispatcher = responseDispatcher;
         this.eventHandler = eventHandler;
     }

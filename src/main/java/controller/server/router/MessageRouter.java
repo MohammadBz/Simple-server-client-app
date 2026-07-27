@@ -28,12 +28,12 @@ public enum MessageRouter {
 
 
     private MessageRouter() {
-        register(new LoginHandler(AuthServiceImpl.INSTANCE, CoreServerManager.INSTANCE, ResponseFactoryImpl.INSTANCE));
-        register(new SignupHandler(AuthServiceImpl.INSTANCE, ResponseFactoryImpl.INSTANCE));
-        register(new SendMessageHandler(CoreServerManager.INSTANCE, ResponseFactoryImpl.INSTANCE));
-        register(new OnlineUsersHandler(CoreServerManager.INSTANCE, ResponseFactoryImpl.INSTANCE));
-        register(new DisconnectHandler(ResponseFactoryImpl.INSTANCE));
-        register(new LogoutHandler(CoreServerManager.INSTANCE, ResponseFactoryImpl.INSTANCE));
+        register(LoginHandler.INSTANCE);
+        register(SignupHandler.INSTANCE);
+        register(SendMessageHandler.INSTANCE);
+        register(OnlineUsersHandler.INSTANCE);
+        register(DisconnectHandler.INSTANCE);
+        register(LogoutHandler.INSTANCE);
     }
 
     public void route(BaseRequest request, ClientConnection clientConnection) throws BusinessException {

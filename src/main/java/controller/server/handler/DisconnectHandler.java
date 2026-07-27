@@ -4,14 +4,15 @@ import lombok.extern.slf4j.Slf4j;
 import protocol.message.Message;
 import protocol.response.factory.ResponseFactory;
 import protocol.request.DisconnectRequest;
+import protocol.response.factory.ResponseFactoryImpl;
 import service.server.core.base.ClientConnection;
 
 @Slf4j
-public class DisconnectHandler implements RequestHandler<DisconnectRequest> {
-    private final ResponseFactory responseFactory;
+public enum DisconnectHandler implements RequestHandler<DisconnectRequest> {
+    INSTANCE;
+    private final ResponseFactory responseFactory = ResponseFactoryImpl.INSTANCE;
 
-    public DisconnectHandler(ResponseFactory responseFactory) {
-        this.responseFactory = responseFactory;
+    private DisconnectHandler() {
     }
 
     @Override

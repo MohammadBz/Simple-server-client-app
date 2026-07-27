@@ -6,19 +6,19 @@ import exception.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import protocol.response.factory.ResponseFactory;
 import protocol.request.SignupRequest;
+import protocol.response.factory.ResponseFactoryImpl;
 import service.common.validation.UserValidator;
 import service.server.business.auth.AuthService;
+import service.server.business.auth.AuthServiceImpl;
 import service.server.core.base.ClientConnection;
 
 @Slf4j
-public class  SignupHandler implements RequestHandler<SignupRequest> {
+public enum SignupHandler implements RequestHandler<SignupRequest> {
+    INSTANCE;
+    private final AuthService authService = AuthServiceImpl.INSTANCE;
+    private final ResponseFactory responseFactory = ResponseFactoryImpl.INSTANCE;
 
-    private final AuthService authService;
-    private final ResponseFactory responseFactory;
-
-    public SignupHandler(AuthService authService, ResponseFactory responseFactory) {
-        this.authService = authService;
-        this.responseFactory = responseFactory;
+    private SignupHandler() {
     }
 
     @Override

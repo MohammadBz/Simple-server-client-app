@@ -6,22 +6,22 @@ import exception.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import protocol.response.factory.ResponseFactory;
 import protocol.request.LoginRequest;
+import protocol.response.factory.ResponseFactoryImpl;
 import service.common.validation.UserValidator;
 import service.server.business.auth.AuthService;
+import service.server.business.auth.AuthServiceImpl;
 import service.server.core.base.ClientConnection;
 import service.server.core.base.SessionOperations;
+import service.server.core.impl.CoreServerManager;
 
 @Slf4j
-public class LoginHandler implements RequestHandler<LoginRequest> {
+public enum LoginHandler implements RequestHandler<LoginRequest> {
+    INSTANCE;
+    private final AuthService authService = AuthServiceImpl.INSTANCE;
+    private final SessionOperations sessionOperations = CoreServerManager.INSTANCE;
+    private final ResponseFactory responseFactory = ResponseFactoryImpl.INSTANCE;
 
-    private final AuthService authService;
-    private final SessionOperations sessionOperations;
-    private final ResponseFactory responseFactory;
-
-    public LoginHandler(AuthService authService, SessionOperations sessionOperations, ResponseFactory responseFactory) {
-        this.authService = authService;
-        this.sessionOperations = sessionOperations;
-        this.responseFactory = responseFactory;
+    private LoginHandler() {
     }
 
     @Override
