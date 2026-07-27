@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import exception.technical.JsonDeserializationException;
-import exception.technical.JsonSerializationException;
+import exception.technical.JsonUnmarshallingException;
+import exception.technical.JsonMarshallingException;
 
 
 public class JacksonMarshaller implements Marshaller<String> {
@@ -29,7 +29,7 @@ public class JacksonMarshaller implements Marshaller<String> {
         try {
             return objectMapper.writeValueAsString(input);
         } catch (JsonProcessingException e) {
-            throw new JsonSerializationException(input.getClass().getSimpleName(), e);
+            throw new JsonMarshallingException(input.getClass().getSimpleName(), e);
         }
     }
 
@@ -38,7 +38,7 @@ public class JacksonMarshaller implements Marshaller<String> {
         try {
             return objectMapper.readValue(json, clazz);
         } catch (Exception e) {
-            throw new JsonDeserializationException("Failed to unmarshall to " + clazz.getSimpleName(), e);
+            throw new JsonUnmarshallingException("Failed to unmarshall to " + clazz.getSimpleName(), e);
         }
     }
 }

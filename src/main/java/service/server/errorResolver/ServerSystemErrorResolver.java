@@ -1,8 +1,8 @@
 package service.server.errorresolver;
 
 import exception.technical.ConnectionException;
-import exception.technical.JsonDeserializationException;
-import exception.technical.JsonSerializationException;
+import exception.technical.JsonUnmarshallingException;
+import exception.technical.JsonMarshallingException;
 import lombok.extern.slf4j.Slf4j;
 import protocol.response.factory.ResponseFactory;
 import protocol.response.factory.ResponseFactoryImpl;
@@ -21,8 +21,8 @@ public enum ServerSystemErrorResolver implements ServerErrorResolver {
 
     private ServerSystemErrorResolver() {
         register(ConnectionException.class, new ConnectionErrorAction());
-        register(JsonSerializationException.class, new JsonSerializationErrorAction());
-        register(JsonDeserializationException.class, new JsonDeserializationErrorAction());
+        register(JsonMarshallingException.class, new JsonSerializationErrorAction());
+        register(JsonUnmarshallingException.class, new JsonDeserializationErrorAction());
         register(SocketException.class, new SocketExceptionErrorAction());
         register(IOException.class, new IOExceptionErrorAction());
     }
