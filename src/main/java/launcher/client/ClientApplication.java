@@ -1,10 +1,8 @@
 package launcher.client;
 
 import controller.client.SocketClientController;
-import infrastructure.marshalling.JacksonMarshaller;
 import infrastructure.marshalling.Marshaller;
-import protocol.request.factory.RequestFactory;
-import protocol.request.factory.RequestFactoryImpl;
+import infrastructure.marshalling.MarshallerStrategy;
 import service.client.base.ClientService;
 import service.client.base.ClientSession;
 import service.client.impl.AbstractClient;
@@ -22,16 +20,13 @@ public class ClientApplication {
     private final AbstractClient client;
     private final ClientService service;
     private final SocketClientController controller;
-    private final Marshaller<String> marshaller;
-    private final RequestFactory requestFactory;
+    private final Marshaller<String> marshaller = MarshallerStrategy.getMarshaller();
 
     public ClientApplication() {
         this.session = new ClientSessionImpl();
         this.ui = new ConsoleUI(session);
-        this.marshaller = JacksonMarshaller.getInstance();
         this.client = new SocketChatClient(null, marshaller);
-        this.requestFactory = RequestFactoryImpl.INSTANCE;
-        this.service = new ClientServiceImpl(client, session, requestFactory);
+        this.service = new ClientServiceImpl(client, session);
 
         this.controller = new SocketClientController(service, session, ui);
 

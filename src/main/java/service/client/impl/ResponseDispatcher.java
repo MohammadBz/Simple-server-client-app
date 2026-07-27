@@ -1,5 +1,6 @@
 package service.client.impl;
 
+import infrastructure.marshalling.MarshallerStrategy;
 import protocol.dto.chat.DeliveryStatusDTO;
 import protocol.dto.chat.OnlineUsersResponseDTO;
 import protocol.message.Message;
@@ -17,11 +18,10 @@ import java.util.Map;
 @Slf4j
 public class ResponseDispatcher {
     private final Map<MessageType, ResponseProcessor> processors = new EnumMap<>(MessageType.class);
-    private final Marshaller<String> marshaller;
-    private ClientEventHandler eventHandler;
+    private final Marshaller<String> marshaller = MarshallerStrategy.getMarshaller();
+    private final ClientEventHandler eventHandler;
 
-    public ResponseDispatcher(Marshaller marshaller, ClientEventHandler eventHandler) {
-        this.marshaller = marshaller;
+    public ResponseDispatcher(ClientEventHandler eventHandler) {
         this.eventHandler = eventHandler;
         initializeProcessors();
     }

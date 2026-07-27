@@ -6,6 +6,7 @@ import exception.validation.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import protocol.request.factory.RequestFactory;
 import protocol.request.BaseRequest;
+import protocol.request.factory.RequestFactoryImpl;
 import service.client.base.ChatClient;
 import service.client.base.ClientService;
 import service.client.base.ClientSession;
@@ -18,13 +19,11 @@ public class ClientServiceImpl implements ClientService {
     private final ChatClient client;
     private final ClientSession session;
     private String pendingLoginUsername;
-    private final RequestFactory requestFactory;
+    private final RequestFactory requestFactory = RequestFactoryImpl.INSTANCE;
 
-    public ClientServiceImpl(ChatClient client, ClientSession session, RequestFactory requestFactory) {
+    public ClientServiceImpl(ChatClient client, ClientSession session) {
         this.client = client;
         this.session = session;
-        this.requestFactory = requestFactory;
-
     }
 
     @Override
